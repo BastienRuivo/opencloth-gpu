@@ -1,7 +1,10 @@
 #include <iostream>
+#include "Engine.h"
 
 
 int main(int argc, char** argv) {
-	std::cout<<"Hello world"<<std::endl;
+	Engine engine;
+	engine.init();
+	engine.run();
 	return 0;
 }

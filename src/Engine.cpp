@@ -39,44 +39,24 @@ void cursorCallback(GLFWwindow * window, double xPos, double yPos)
 }
 void Engine::init(uint w, uint h)
 {
-    m_engineWindow = new Window(w, h, "nuage");
+    m_engineWindow = new Window(w, h, "Simulation tissu");
 
     m_engineWindow->init();
     initGLAD();
-
-    Shapes::initShapes();
 
     r = g = b = 0.f;
     a = 1.f;
     m_inputPrevent = 0;
 
     m_shader.init("basic2D", "./shaders/default.vs", "./shaders/default2D.fs");
-    m_shader.init("basic3D", "./shaders/default.vs", "./shaders/default3D.fs");
-    m_shader.init("nuage", "./shaders/oldNuageVS.vs", "./shaders/oldNuageFS.fs");
-    //m_shader.init("nuage", "./shaders/nuage.vs", "./shaders/nuage.fs");
 
 
     m_shader.use("basic2D");
     m_shader.setInt("basic2D", "texture1", 0);
     m_shader.setInt("basic2D", "texture2", 1);
 
-    m_shader.use("basic3D");
-    m_shader.setInt("basic3D", "texture1", 0);
-    m_shader.setInt("basic3D", "texture2", 1);
-
-    m_shader.use("nuage");
-    m_shader.setInt("nuage", "shape", 0);
-    m_shader.setInt("nuage", "detail", 1);
-    m_shader.setInt("nuage", "weathermap", 2);
-
-    m_texturesManager.init();
-    m_texturesManager.Load3D("shape", "./data/texture3D/highres.3DT");
-    m_texturesManager.Load3D("detail", "./data/texture3D/lowres.3DT");
-    m_texturesManager.Load2D("weathermap", "./data/weathermap/test.png");
-
     m_texturesManager.Load2D("kirbo", "./data/kirbo.png");
     m_texturesManager.Load2D("sonc", "./data/sonc.png");
-    m_texturesManager.Load2D("atlas", "./data/realistAtlas.png");
 
     m_world = new World(m_texturesManager, m_shader);
     m_world->getCam()->setLastX(w / 2.f);
@@ -194,12 +174,6 @@ Shader* Engine::getShader()
     return &m_shader;
 }
 
-void writeAndLoad(Textures & tex, bool & endRegen)
-{
-    tex.writeWeatherMap(rand(), 3, 15, rand(), 4);
-    endRegen = true;
-}
-
 void Engine::run()
 {
     
@@ -239,64 +213,15 @@ void Engine::run()
 
         if(m_isUIDisplayed)
         { 
-            CloudContainer * C = (CloudContainer*)(m_world->m_objects.back());
-            /// CLOUD VALUES
-            m_engineWindow->beginGui("Cloud Shape");
-            m_engineWindow->slider("Cumulonimbus", C->m_anvilAmount, 0.f, 1.f);
-            m_engineWindow->slider("Coverage", C->m_globalCoverage, 0.f, 1.f);
-            m_engineWindow->slider("Density", C->m_globalDensity, 0.f, 15.f);
-            m_engineWindow->slider("pos min X", C->m_vboxMin.x, -200.f, 200.f);
-            m_engineWindow->slider("pos min Y", C->m_vboxMin.y, -200.f, 200.f);
-            m_engineWindow->slider("pos min Z", C->m_vboxMin.z, -200.f, 200.f);
-            m_engineWindow->slider("pos max X", C->m_vboxMax.x, -200.f, 200.f);
-            m_engineWindow->slider("pos max Y", C->m_vboxMax.y, -200.f, 200.f);
-            m_engineWindow->slider("pos max Z", C->m_vboxMax.z, -200.f, 200.f);
-            m_engineWindow->endGui();
+            m_engineWindow->beginGui("UI");
 
-            if(endRegen)
-            {
-                m_texturesManager.Load2D("weathermap", "./data/weathermap/test.png");
-                endRegen = false;
-                //weatherGen.join();
-            }
-
-            /// WEATHERMAP VALUES
-            m_engineWindow->beginGui("Weather");
-            if(m_engineWindow->button("Reroll weathermap",100, 50) || debugStart)
-            {
-                weatherGen.push_back(std::thread(writeAndLoad, std::ref(m_texturesManager), std::ref(endRegen)));
-                debugStart = false;
-            }
-
-            m_engineWindow->slider("minimal density", C->m_minDensity, 0.f, 1.f);
-            m_engineWindow->slider("maximal density", C->m_maxDensity, 0.f, 1.f);
-            m_engineWindow->slider("minimal height", C->m_minHeight, 0.f, 1.f);
-            m_engineWindow->slider("maximal height", C->m_maxHeight, 0.f, 1.f);
-            m_engineWindow->endGui();
-
-            /// LIGHT VALUES
-            m_engineWindow->beginGui("Light");
-            m_engineWindow->slider("Light position X", C->m_lightPos.x, -300.f, 300.f);
-            m_engineWindow->slider("Light position Y", C->m_lightPos.y, -300.f, 300.f);
-            m_engineWindow->slider("Light position Z", C->m_lightPos.z, -300.f, 300.f);
-            m_engineWindow->slider("Light Power", C->m_lightPower, 0.f, 200.f);
-            m_engineWindow->slider("Multiplicator", C->m_lightMultiplicator, 0.f, 40.f);
-            m_engineWindow->checkBox("Sun", C->m_drawSun);
-            m_engineWindow->endGui();
             m_engineWindow->drawGui();
         }
-        
-
-        //delete C;
 
         keyboardHandler(m_world->getCam());
         if(m_inputPrevent >= 0) m_inputPrevent--;
         m_engineWindow->update();
     }
-  for(int i = 0; i < weatherGen.size(); i++)
-  {
-      weatherGen[i].join();
-  }
     
 }
 

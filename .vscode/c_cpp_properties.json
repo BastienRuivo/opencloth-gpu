@@ -4,8 +4,10 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/c++/12.2.0",
-                "/usr/include/c++/12.2.1"
+                "/usr/include/c++/12.2.1",
+                "${workspaceFolder}/src/include",
+                "${workspaceFolder}/lib",
+                "${workspaceFolder}/src/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

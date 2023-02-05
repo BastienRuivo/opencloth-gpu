@@ -4,22 +4,22 @@ int Window::initGlfw(const int & major, const int & minor)
 {
     std::cout<<"initialisation GLFW"<<std::endl;
     // initialisation
-    if(glfwInit() == GLFW_TRUE)
-    {
-        // Configuration
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major); // Version majeur d'openGL (1 2 3 4)
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor); // Version précise de la majeur (le 8 de 4.8 par ex)
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        std::cout<<"GLFW Initilise"<<std::endl;
-        return 0;
-    }
-    else
+    if(glfwInit() != GLFW_TRUE)
     {
         std::cerr<<"ERREUR INITIALISATION GLFW"<<std::endl;
         return -1;
     }
     
+    // Configuration
     
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major); // Version majeur d'openGL (1 2 3 4)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor); // Version précise de la majeur (le 8 de 4.8 par ex)
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    
+
+    std::cout<<"GLFW Initilise"<<std::endl;
+    return 0;
 
 }
 
