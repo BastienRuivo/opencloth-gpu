@@ -40,6 +40,7 @@ target_link_libraries(${outputName} PUBLIC glad)
 target_link_libraries(${outputName} PUBLIC imgui)
 target_link_libraries(${outputName} PUBLIC lodepng)
 target_link_libraries(${outputName} PUBLIC stb_image)
+target_link_libraries(${outputName} PUBLIC glfw OpenGL::GL ${CMAKE_DL_LIBS})
 
 file(COPY data DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
