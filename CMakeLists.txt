@@ -27,9 +27,9 @@ set(SRCS
 set(outputName run)
 
 add_executable(${outputName} ${SRCS})
-target_include_directories(${outputName} PUBLIC ${OPENGL_INCLUDE_DIR})
+target_include_directories(${outputName} PUBLIC OpenGL::GL ${CMAKE_DL_LIBS})
 target_include_directories(${outputName} PUBLIC ${GLUT_INCLUDE_DIR})
-target_link_libraries(${outputName} PUBLIC glfw ${OPENGL_gl_LIBRARY})
+target_link_libraries(${outputName} PUBLIC glfw OpenGL::GL ${CMAKE_DL_LIBS})
 target_link_libraries(${outputName} PUBLIC glut)
 target_link_libraries(${outputName} PUBLIC GLU)
 target_link_libraries(${outputName} PUBLIC GLEW)
