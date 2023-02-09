@@ -14,9 +14,10 @@ Object::~Object()
     
 }
 
-Object::Object(const Cube & cube) {
+Object::Object(const Cube & cube) : Object(){
     m_mesh = Mesh::initCube();
-    this->setPosition(cube.center).setScale(glm::vec3(cube.width));
+    this->setPosition(cube.center)
+        .setScale(glm::vec3(cube.width));
 }
 
 
