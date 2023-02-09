@@ -86,6 +86,8 @@ public:
      */
     void draw();
 
+    
+
     /** @brief affiche l'objet
      * @param angle angle de rotation
      * @param shaderToUse Pointeur vers le shader a utiliser

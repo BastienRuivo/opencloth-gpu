@@ -65,8 +65,9 @@ Object& Object::resetModel()
 void Object::draw()
 {
     glBindVertexArray(m_mesh->getVAO());
-    glDrawArrays(GL_TRIANGLES, 0, m_mesh->getVertexCount());
+    glDrawElements(GL_TRIANGLES, this->m_mesh->getIndicesCount(), GL_UNSIGNED_INT, 0);
 }
+
 
 
 Object& Object::setTextureKeys(std::vector<std::string> keys)

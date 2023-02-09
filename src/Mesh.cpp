@@ -60,40 +60,27 @@ uint Mesh::getVertexCount() const
     return m_vertex.size()/8;
 }
 
-Mesh& Mesh::setPolygon(std::vector<float> vertices, std::vector<uint> verticesOrder, std::vector<float> uvArray, std::vector<uint> uvOrder, std::vector<float> color, std::vector<uint> colorOrder)
+uint Mesh::getIndicesCount() const
 {
-    // On s'assure que uvOrder et verticesOrder font la même taille
-    assert(!(uvOrder.empty() && uvOrder.size() == verticesOrder.size()));
+    return m_indices.size();
+}
 
-    for(int i = 0; i < verticesOrder.size(); i++)
-    {
-        for(int j = 0; j < 3; j++)
-        {
-            m_vertex.push_back(vertices[verticesOrder[i] * 3 + j]);
-        }
-        for(int j = 0; j < 3; j++)
-        {
-            if(!colorOrder.empty())
-            {
-                m_vertex.push_back(color[colorOrder[i] * 3 + j]);
-            }
-            else
-            {
-                m_vertex.push_back(1.f);
-            }
-        }
-        for(int j = 0; j < 2; j++)
-        {
-            if(!uvOrder.empty())
-            {
-                m_vertex.push_back( uvArray[uvOrder[i] * 2 + j]);
-            }
-            else
-            {
-                m_vertex.push_back(1.f);
-            }
-        }
+Mesh& Mesh::setPolygon(std::vector<glm::vec3> vertices, std::vector<uint> verticesOrder, std::vector<glm::vec3> normals, std::vector<glm::vec2> uvs)
+{
+    for(int i = 0; i < vertices.size(); i++) {
+
+        m_vertex.push_back(vertices[i].x);
+        m_vertex.push_back(vertices[i].y);
+        m_vertex.push_back(vertices[i].z);
+
+        m_vertex.push_back(normals[i].x);
+        m_vertex.push_back(normals[i].y);
+        m_vertex.push_back(normals[i].z);
+
+        m_vertex.push_back(uvs[i].x);
+        m_vertex.push_back(uvs[i].y);
     }
+    m_indices = verticesOrder;
     init(); //sure?
     return *this;
 }
@@ -106,4 +93,150 @@ void Mesh::init()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glEnable(GL_DEPTH_TEST);
+}
+
+Mesh * Mesh::initCube()
+{
+    std::cout<<"Cube...";
+    Mesh * cube = new Mesh();
+    /** Vertex Order Scheme
+    *		   4 - 5
+    *		  /   /|
+    *		 0 - 1 7
+    *		 |   |/
+    *		 2 - 3
+    */
+    std::vector<glm::vec3> vertices =
+    {
+        glm::vec3(0.f, 1.f, 0.f),   // Top Left front 0
+        glm::vec3(1.f, 1.f, 0.f),   // Top Right front 1
+        glm::vec3(0.f, 0.f, 0.f),   // Bottom Left front 2
+        glm::vec3(0.f, 0.f, 0.f),   // Bottom Left front 2
+        glm::vec3(1.f, 1.f, 0.f),   // Top Right front 1
+        glm::vec3(1.f, 0.f, 0.f),   // Bottom Right front 3
+
+        glm::vec3(1.f, 1.f, 1.f),   // Top Right back 5
+        glm::vec3(0.f, 1.f, 1.f),   // Top Left back 4
+        glm::vec3(1.f, 0.f, 1.f),   // Bottom Right back 7
+        glm::vec3(1.f, 0.f, 1.f),   // Bottom Right back 7
+        glm::vec3(0.f, 1.f, 1.f),   // Top Left back 4
+        glm::vec3(0.f, 0.f, 1.f),   // Bottom Left back 6
+
+        glm::vec3(1.f, 1.f, 0.f),   // Top Right front 1
+        glm::vec3(1.f, 1.f, 1.f),   // Top Right back 5
+        glm::vec3(1.f, 0.f, 0.f),   // Bottom Right front 3
+        glm::vec3(1.f, 0.f, 0.f),   // Bottom Right front 3
+        glm::vec3(1.f, 1.f, 1.f),   // Top Right back 5
+        glm::vec3(1.f, 0.f, 1.f),   // Bottom Right back 7
+
+        glm::vec3(0.f, 1.f, 1.f),   // Top Left back 4
+        glm::vec3(0.f, 1.f, 0.f),   // Top Left front 0
+        glm::vec3(0.f, 0.f, 1.f),   // Bottom Left back 6
+        glm::vec3(0.f, 0.f, 1.f),   // Bottom Left back 6
+        glm::vec3(0.f, 1.f, 0.f),   // Top Left front 0
+        glm::vec3(0.f, 0.f, 0.f),   // Bottom Left front 2
+
+        glm::vec3(0.f, 1.f, 1.f),   // Top Left back 4
+        glm::vec3(1.f, 1.f, 1.f),   // Top Right back 5
+        glm::vec3(0.f, 1.f, 0.f),   // Top Left front 0
+        glm::vec3(0.f, 1.f, 0.f),   // Top Left front 0
+        glm::vec3(1.f, 1.f, 1.f),   // Top Right back 5
+        glm::vec3(1.f, 1.f, 0.f),   // Top Right front 1
+
+        glm::vec3(0.f, 0.f, 1.f),   // Bottom Left back 6
+        glm::vec3(0.f, 0.f, 0.f),   // Bottom Left front 2
+        glm::vec3(1.f, 0.f, 1.f),   // Bottom Right back 7
+        glm::vec3(1.f, 0.f, 1.f),   // Bottom Right back 7
+        glm::vec3(0.f, 0.f, 0.f),   // Bottom Left front 2
+        glm::vec3(1.f, 0.f, 0.f)    // Bottom Right front 3
+    };
+
+    std::vector<uint> verticesOrder;
+
+    for (uint i = 0; i < vertices.size(); i++)
+    {
+        verticesOrder.push_back(i);
+    }
+
+    std::vector<glm::vec3> normals = {
+
+        // FRONT
+        glm::vec3(-1.f, 0.f, 0.f), 
+        glm::vec3(-1.f, 0.f, 0.f),
+        glm::vec3(-1.f, 0.f, 0.f),
+        glm::vec3(-1.f, 0.f, 0.f),
+        glm::vec3(-1.f, 0.f, 0.f),
+        glm::vec3(-1.f, 0.f, 0.f),
+
+        // BACK NORMALS
+        glm::vec3(1.f, 0.f, 0.f),
+        glm::vec3(1.f, 0.f, 0.f),
+        glm::vec3(1.f, 0.f, 0.f),
+        glm::vec3(1.f, 0.f, 0.f),
+        glm::vec3(1.f, 0.f, 0.f),
+        glm::vec3(1.f, 0.f, 0.f),
+
+        // RIGHT NORMALS
+        glm::vec3(0.f, 0.f, 1.f),
+        glm::vec3(0.f, 0.f, 1.f),
+        glm::vec3(0.f, 0.f, 1.f),
+        glm::vec3(0.f, 0.f, 1.f),
+        glm::vec3(0.f, 0.f, 1.f),
+        glm::vec3(0.f, 0.f, 1.f),
+
+        // LEFT NORMALS
+        glm::vec3(0.f, 0.f, -1.f),
+        glm::vec3(0.f, 0.f, -1.f),
+        glm::vec3(0.f, 0.f, -1.f),
+        glm::vec3(0.f, 0.f, -1.f),
+        glm::vec3(0.f, 0.f, -1.f),
+        glm::vec3(0.f, 0.f, -1.f),
+
+        // UPWARD NORMALS
+        glm::vec3(0.f, 1.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f),
+
+        // DOWNWARD NORMALS
+        glm::vec3(0.f, -1.f, 0.f),
+        glm::vec3(0.f, -1.f, 0.f),
+        glm::vec3(0.f, -1.f, 0.f),
+        glm::vec3(0.f, -1.f, 0.f),
+        glm::vec3(0.f, -1.f, 0.f),
+        glm::vec3(0.f, -1.f, 0.f)
+        
+    };
+
+    std::vector<glm::vec2> uv =
+    {
+        // Make the folowing triangle 1 2 0 0 2 3
+        glm::vec2(0.f, 1.f), glm::vec2(1.f, 1.f), glm::vec2(0.f, 0.f),
+        glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f), glm::vec2(1.f, 0.f),
+
+        // Make the folowing triangle 1 2 0 0 2 3
+        glm::vec2(0.f, 1.f), glm::vec2(1.f, 1.f), glm::vec2(0.f, 0.f),
+        glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f), glm::vec2(1.f, 0.f),
+
+        // Make the folowing triangle 1 2 0 0 2 3
+        glm::vec2(0.f, 1.f), glm::vec2(1.f, 1.f), glm::vec2(0.f, 0.f),
+        glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f), glm::vec2(1.f, 0.f),
+
+        // Make the folowing triangle 1 2 0 0 2 3
+        glm::vec2(0.f, 1.f), glm::vec2(1.f, 1.f), glm::vec2(0.f, 0.f),
+        glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f), glm::vec2(1.f, 0.f),
+
+        // Make the folowing triangle 3 0 2 2 0 1
+        glm::vec2(1.f, 0.f), glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f),
+        glm::vec2(1.f, 1.f), glm::vec2(0.f, 0.f), glm::vec2(0.f, 1.f),
+
+        // Make the folowing triangle 0 1 3 3 1 2
+        glm::vec2(0.f, 0.f), glm::vec2(0.f, 1.f), glm::vec2(1.f, 0.f),
+        glm::vec2(1.f, 0.f), glm::vec2(0.f, 1.f), glm::vec2(1.f, 1.f)
+    };
+    
+    cube->setPolygon(vertices, verticesOrder, normals, uv);
+    return cube;
 }
