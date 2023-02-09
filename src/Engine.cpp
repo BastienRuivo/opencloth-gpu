@@ -61,6 +61,7 @@ void Engine::init(uint w, uint h)
     m_world = new World(m_texturesManager, m_shader);
     m_world->getCam()->setLastX(w / 2.f);
     m_world->getCam()->setLastY(h / 2.f);
+    m_world->getCam()->m_position.y = 0.5f;
     m_world->m_projection = mat4(1.f);
 
     srand(time(NULL));

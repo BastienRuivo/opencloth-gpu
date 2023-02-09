@@ -13,3 +13,31 @@ class Cube {
         this->width = width;
     }
 };
+
+class Plane {
+    public:
+    glm::vec3 center;
+    int divW;
+    int divH;
+
+    Plane(glm::vec3 center, int divW, int divH) {
+        this->center = center;
+        this->divW = divW;
+        this->divH = divH;
+    }
+};
+
+
+class Tissus {
+    public:
+    glm::vec3 center;
+    int divW;
+    int divH;
+
+    Tissus(glm::vec3 center, int divW, int divH) {
+        this->center = center;
+        this->divW = divW;
+        this->divH = divH;
+    }
+};
+

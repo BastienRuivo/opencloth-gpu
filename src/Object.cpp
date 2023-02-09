@@ -20,6 +20,16 @@ Object::Object(const Cube & cube) : Object(){
         .setScale(glm::vec3(cube.width));
 }
 
+Object::Object(const Plane & plane) : Object(){
+    m_mesh = Mesh::initPlane(plane.divW, plane.divH);
+    this->setPosition(plane.center);
+}
+
+Object::Object(const Tissus & tissus) : Object(){
+    m_mesh = Mesh::initTissus(tissus.divW, tissus.divH);
+    this->setPosition(tissus.center);
+}
+
 
 Object& Object::rotate(float angle, glm::vec3 vAxis)
 {

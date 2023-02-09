@@ -7,12 +7,29 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
     m_projection = glm::mat4(1.f);
 
     // Création du cube de test
-    Object * defaultCube = new Object(Cube(glm::vec3(2.f), 2));
-    defaultCube->setShaderKey("basic2D")
-                .setFaceCulling(false)
-                .setTextureKeys({"sonc", "kirbo"});
+    Object * defaultCube = new Object(Cube(glm::vec3(9.f, 0.f, 0.f), 1));
+    defaultCube->setPosition(glm::vec3(10.f, 0.f, 0.f))
+                .setShaderKey("basic2D")
+                .setFaceCulling(true)
+                .setTextureKeys({"sonc"});
+
+    Object * defaultPlane = new Object(Plane(glm::vec3(0.f), 10, 10));
+    defaultPlane->setPosition(glm::vec3(0.f, 0.f, 0.f))
+                .setShaderKey("basic2D")
+                .setFaceCulling(true)
+                .setTextureKeys({"sonc"});
+
+    Object * defaultTissus = new Object(Tissus(glm::vec3(0.f), 20, 20));
+    defaultTissus->setPosition(glm::vec3(0.f, 0.f, 0.f))
+                .setShaderKey("basic2D")
+                .setFaceCulling(true)
+                .setTextureKeys({"kirbo"});
+
+
 
     addObject(defaultCube);
+    addObject(defaultPlane);
+    addObject(defaultTissus);
 
 
     std::cout<<"Fin de l'initialisation du monde"<<std::endl;

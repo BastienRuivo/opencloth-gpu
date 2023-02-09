@@ -52,7 +52,9 @@ public:
     /** @brief destructeur par défaut     */
     ~Object();
 
-    Object(const Cube & cube);
+    explicit Object(const Cube & cube);
+    explicit Object(const Plane & plane);
+    explicit Object(const Tissus & tissus);
 
     /** @brief Tourne l'objet autour de l'axe donné
      * @param angle Angle de la rotation

@@ -54,6 +54,10 @@ public:
         std::vector<glm::vec2> uvs = {}
     );
     static Mesh * initCube();
+    static Mesh * initPlane(int divW, int divH);
+    static Mesh * initTissus(int divW, int divH);
 };
+
+
 
 #endif //MESH_H

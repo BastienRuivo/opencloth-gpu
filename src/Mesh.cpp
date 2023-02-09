@@ -97,7 +97,7 @@ void Mesh::init()
 
 Mesh * Mesh::initCube()
 {
-    std::cout<<"Cube...";
+    std::cout<<"Cube..."<<std::endl;
     Mesh * cube = new Mesh();
     /** Vertex Order Scheme
     *		   4 - 5
@@ -239,4 +239,60 @@ Mesh * Mesh::initCube()
     
     cube->setPolygon(vertices, verticesOrder, normals, uv);
     return cube;
+}
+
+Mesh * Mesh::initPlane(int divW, int divH) {
+    std::cout<<"Plane..."<<std::endl;
+    Mesh * plane = new Mesh();
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
+    std::vector<unsigned int> verticesOrder;
+
+    for (int j = 0; j < divH; j++) {
+        for (int i = 0; i < divW; i++) {
+            vertices.push_back(glm::vec3(i, 0, j));
+            if(i < divW - 1 && j < divH - 1) {
+                verticesOrder.push_back(i * divH + j);
+                verticesOrder.push_back(i * divH + j + 1);
+                verticesOrder.push_back((i + 1) * divH + j);
+                verticesOrder.push_back((i + 1) * divH + j);
+                verticesOrder.push_back(i * divH + j + 1);
+                verticesOrder.push_back((i + 1) * divH + j + 1);
+            }
+            normals.push_back(glm::vec3(0, 1, 0));
+            uvs.push_back(glm::vec2(i, j));
+        }
+    }
+
+    plane->setPolygon(vertices, verticesOrder, normals, uvs);
+    return plane;
+}
+
+Mesh * Mesh::initTissus(int divW, int divH) {
+    std::cout<<"Tissus..."<<std::endl;
+    Mesh * tissus = new Mesh();
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
+    std::vector<unsigned int> verticesOrder;
+
+    for (int j = 0; j < divH; j++) {
+        for (int i = 0; i < divW; i++) {
+            vertices.push_back(glm::vec3(i/(float)divW, j/(float)divH, 0));
+            if(i < divW - 1 && j < divH - 1) {
+                verticesOrder.push_back(i * divH + j);
+                verticesOrder.push_back(i * divH + j + 1);
+                verticesOrder.push_back((i + 1) * divH + j);
+                verticesOrder.push_back((i + 1) * divH + j);
+                verticesOrder.push_back(i * divH + j + 1);
+                verticesOrder.push_back((i + 1) * divH + j + 1);
+            }
+            normals.push_back(glm::vec3(0, 1, 0));
+            uvs.push_back(glm::vec2(i/(float)divW, j/(float)divH));
+        }
+    }
+
+    tissus->setPolygon(vertices, verticesOrder, normals, uvs);
+    return tissus;
 }
