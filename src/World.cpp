@@ -7,12 +7,12 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
     m_projection = glm::mat4(1.f);
 
     // Création du cube de test
-    Cube * defaultCube = new Cube(glm::vec3(2.f));
-    defaultCube->setShaderKey("basic2D")
-                .setFaceCulling(false)
-                .setTextureKeys({"sonc", "kirbo"});
+    // Object * defaultCube = new Cube(glm::vec3(2.f));
+    // defaultCube->setShaderKey("basic2D")
+    //             .setFaceCulling(false)
+    //             .setTextureKeys({"sonc", "kirbo"});
 
-    addObject(defaultCube);
+    // addObject(defaultCube);
 
 
     std::cout<<"Fin de l'initialisation du monde"<<std::endl;

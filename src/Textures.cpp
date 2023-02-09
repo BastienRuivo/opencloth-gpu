@@ -10,14 +10,14 @@ void Textures::init()
     glEnable(GL_TEXTURE_3D);
 }
 
-void Textures::use2D(const std::string& key, uint texNumb)
+void Textures::use(const std::string& key, uint texNumb)
 {
     glActiveTexture(GL_TEXTURE0+texNumb);
     //std::cout<<"GL_TEXTURE"<<texNumb<<std::endl;
     glBindTexture(GL_TEXTURE_2D, m_texId[key]);
 }
 
-void Textures::Load2D(const std::string & key, const std::string & path)
+void Textures::load(const std::string & key, const std::string & path)
 {
     std::vector<unsigned char> data;
     uint width, height;

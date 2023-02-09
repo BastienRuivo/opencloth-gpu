@@ -97,7 +97,7 @@ void Object::render(Shader & Shader, Textures & textureManager, const glm::mat4 
 
     for(int i = 0; i < m_texturesKeys.size(); i++)
     {
-        textureManager.use2D(m_texturesKeys[i], i);
+        textureManager.use(m_texturesKeys[i], i);
     }
 
     resetModel();

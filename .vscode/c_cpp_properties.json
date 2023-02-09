@@ -4,16 +4,16 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/c++/12.2.1",
-                "${workspaceFolder}/src/include",
                 "${workspaceFolder}/lib",
-                "${workspaceFolder}/src/include"
+                "${workspaceFolder}/src/include",
+                "/usr/lib",
+                "/lib"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64",
+            "intelliSenseMode": "linux-gcc-arm",
             "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],

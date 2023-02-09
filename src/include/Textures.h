@@ -2,7 +2,7 @@
 #define TEXTURES_H
 #include <string>
 #include <iostream>
-#include <stb_image/stb_image.h>
+#include <stb/stb_image.h>
 #include <lodepng/lodepng.h>
 #include <vector>
 #include <FastNoise/FastNoise.h>
@@ -42,9 +42,9 @@ class Textures
     /** @brief Définit la texture a utiliser pour déssinner
      * @param texture uint contenant l'id de la texture
     */
-    void use2D(const std::string& key, uint texNumb = 0);
+    void use(const std::string& key, uint texNumb = 0);
 
-    void Load2D(const std::string & key, const std::string & path);
+    void load(const std::string & key, const std::string & path);
     
     std::map<std::string, uint> m_texId;
     private:

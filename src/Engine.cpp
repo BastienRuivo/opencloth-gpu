@@ -55,8 +55,8 @@ void Engine::init(uint w, uint h)
     m_shader.setInt("basic2D", "texture1", 0);
     m_shader.setInt("basic2D", "texture2", 1);
 
-    m_texturesManager.Load2D("kirbo", "./data/kirbo.png");
-    m_texturesManager.Load2D("sonc", "./data/sonc.png");
+    m_texturesManager.load("kirbo", "./data/kirbo.png");
+    m_texturesManager.load("sonc", "./data/sonc.png");
 
     m_world = new World(m_texturesManager, m_shader);
     m_world->getCam()->setLastX(w / 2.f);
@@ -198,25 +198,31 @@ void Engine::run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         float ratioScreen = (float)m_engineWindow->getWidth() / (float)m_engineWindow->getHeight();
         
-        if(m_isUIDisplayed)
-        {
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
-            bool show = true;
-        }
+        // if(m_isUIDisplayed)
+        // {
+        //     std::cout<<"Test 0"<<std::endl;
+        //     ImGui_ImplOpenGL3_NewFrame();
+        //     ImGui_ImplGlfw_NewFrame();
+        //     ImGui::NewFrame();
+        //     bool show = true;
+        // }
         
         
         m_world->update(time, ratioScreen);
         m_world->render();
         
 
-        if(m_isUIDisplayed)
-        { 
-            m_engineWindow->beginGui("UI");
+        // if(m_isUIDisplayed)
+        // { 
+        //     m_engineWindow->beginGui("UI");
+        //     std::cout<<"test"<<std::endl;
 
-            m_engineWindow->drawGui();
-        }
+        //     //m_engineWindow->drawGui();
+        //     std::cout<<"test2"<<std::endl;
+
+        //     m_engineWindow->endGui();
+        //     std::cout<<"test3"<<std::endl;
+        // }
 
         keyboardHandler(m_world->getCam());
         if(m_inputPrevent >= 0) m_inputPrevent--;

@@ -3,7 +3,7 @@
 #define WORLD_H
 
 #include "Camera.h"
-#include "Objects.h"
+#include "Object.h"
 
 /** @class World
  * @brief Gère les objets, un peu comme une scène sur unity et contient la matrice du monde

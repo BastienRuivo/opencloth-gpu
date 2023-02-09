@@ -1,5 +1,3 @@
 add_subdirectory(FastNoise)
 add_subdirectory(glad)
-add_subdirectory(imgui)
 add_subdirectory(lodepng)
-add_subdirectory(stb_image)
