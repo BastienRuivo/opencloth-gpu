@@ -6,6 +6,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
+find_package(OpenCL REQUIRED)
 
 set (LOCAL_DIR ./src)
 set (LIB_DIR ./lib)
@@ -25,6 +26,8 @@ set(SRCS
     ${LOCAL_DIR}/Window.cpp
     ${LOCAL_DIR}/World.cpp
     ${LOCAL_DIR}/include/Shape.h
+    ${LOCAL_DIR}/kernel.cpp
+
 )
 
 set(outputName run)
@@ -39,6 +42,7 @@ target_link_libraries(${outputName} PUBLIC FastNoise)
 target_link_libraries(${outputName} PUBLIC glad)
 target_link_libraries(${outputName} PUBLIC lodepng)
 target_link_libraries(${outputName} PUBLIC glfw OpenGL::GL ${CMAKE_DL_LIBS})
+target_link_libraries(${outputName} PUBLIC OpenCL)
 
 file(COPY data DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
