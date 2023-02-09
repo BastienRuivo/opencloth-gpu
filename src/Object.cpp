@@ -4,7 +4,7 @@
 
 Object::Object() :
 is2D(false), has_face_culling(true), m_model(glm::mat4(1.f)),
-m_position({glm::vec3(0.f)}), m_shaderKey("basic2D")
+m_position({glm::vec3(0.f)}), m_shaderKey("basic2D"), m_rotation({glm::vec3(0.f)}), m_scale({glm::vec3(1.f)})
 {
 
 }
@@ -12,6 +12,11 @@ m_position({glm::vec3(0.f)}), m_shaderKey("basic2D")
 Object::~Object()
 {
     
+}
+
+Object::Object(const Cube & cube) {
+    m_mesh = Mesh::initCube();
+    this->setPosition(cube.center).setScale(glm::vec3(cube.width));
 }
 
 
@@ -88,9 +93,14 @@ void Object::setUniform(Shader & Shader, const glm::mat4 & view, const glm::mat4
     Shader.setMat4(m_shaderKey, "projection", projection);
 }
 
+void Object::setUniforms(Shader & Shader, const glm::mat4 & model, const glm::mat4 & view, const glm::mat4 & projection)
+{
+
+}
+
 void Object::render(Shader & Shader, Textures & textureManager, const glm::mat4 & view, const glm::mat4 & projection)
 {
-    setUniform(Shader, view, projection);
+    this->setUniform(Shader, view, projection);
     // Si l'objet ne doit pas masquer l'environnement
     // activer puis désactiver le face culling
     if (!has_face_culling) glDisable(GL_CULL_FACE);
@@ -102,6 +112,10 @@ void Object::render(Shader & Shader, Textures & textureManager, const glm::mat4 
 
     resetModel();
     translate(m_position);
+    rotate(m_rotation.x, {1.f, 0.f, 0.f});
+    rotate(m_rotation.y, {0.f, 1.f, 0.f});
+    rotate(m_rotation.z, {0.f, 0.f, 1.f});
+    scale(m_scale);
     Shader.setMat4(m_shaderKey, "model", m_model);
     setUniforms(Shader, m_model, view, projection);
     draw();
@@ -121,3 +135,14 @@ Object& Object::setPosition(glm::vec3 position)
     return *this;
 }
 
+Object& Object::setRotation(glm::vec3 rotation)
+{
+    m_rotation = rotation;
+    return *this;
+}
+
+Object& Object::setScale(glm::vec3 scale)
+{
+    m_scale = scale;
+    return *this;
+}

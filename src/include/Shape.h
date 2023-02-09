@@ -4,6 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 class Cube {
+    public:
     glm::vec3 center;
     int width;
 

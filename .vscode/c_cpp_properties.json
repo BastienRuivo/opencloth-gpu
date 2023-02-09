@@ -7,7 +7,8 @@
                 "${workspaceFolder}/lib",
                 "${workspaceFolder}/src/include",
                 "/usr/lib",
-                "/lib"
+                "/lib",
+                "${workspaceFolder}/src/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

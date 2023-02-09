@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "Textures.h"
 #include "Mesh.h"
+#include "Shape.h"
 
 
 #include <glm/glm.hpp>
@@ -37,12 +38,12 @@ protected:
    * @param view        la matrice de vue
    * @param projection  la matrice de projection
    */
-  virtual void setUniforms(
+  void setUniforms(
     Shader& shaders,
     const glm::mat4 & model,
     const glm::mat4 & view,
     const glm::mat4 & projection
-  ) = 0;
+  );
 
 public:
     /** @brief Constructeur par défaut     */
@@ -50,6 +51,8 @@ public:
 
     /** @brief destructeur par défaut     */
     ~Object();
+
+    Object(const Cube & cube);
 
     /** @brief Tourne l'objet autour de l'axe donné
      * @param angle Angle de la rotation
@@ -74,7 +77,7 @@ public:
     /// Renvoie true si le face culling est activé pour l'objet. renvoie false sinon
     bool  getFaceCulling() const;
 
-    virtual void setUniform(Shader & Shader, const glm::mat4 & view, const glm::mat4 & projection);
+    void setUniform(Shader & Shader, const glm::mat4 & view, const glm::mat4 & projection);
 
     /// Permet de changer le mesh utilisé par l'objet
     void setMesh(Mesh * newMesh);
@@ -95,6 +98,16 @@ public:
      * @param position la nouvelle position de l'objet
      */
     Object& setPosition(glm::vec3 position);
+
+    /** @brief Remplace la rotation de l'objet par le vecteur donné
+     * @param vRot l'axe de rotation
+     */
+    Object& setRotation(glm::vec3 vRot);
+
+    /** @brief Remplace le dimensionnement de l'objet par le vecteur donné
+     * @param  newDim le nouveau dimensionnement de l'objet
+     */
+    Object& setScale(glm::vec3 newDim);
 
     /** @brief remplit la clé du shader de l'objet
      * @param key la clé du shader à utiliser
@@ -120,6 +133,10 @@ public:
     glm::mat4 m_model;
     /// Vecteur 3D de position
     glm::vec3 m_position;
+    /// Vecteur 3D de rotation
+    glm::vec3 m_rotation;
+    /// Vecteur 3D de redimensionnement
+    glm::vec3 m_scale;
 };
 
 #endif //OBJECT_H

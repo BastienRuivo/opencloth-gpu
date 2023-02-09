@@ -24,7 +24,7 @@ set(SRCS
     ${LOCAL_DIR}/Textures.cpp
     ${LOCAL_DIR}/Window.cpp
     ${LOCAL_DIR}/World.cpp
-    ${LOCAL_DIR}/include/Shapes.h
+    ${LOCAL_DIR}/include/Shape.h
 )
 
 set(outputName run)
