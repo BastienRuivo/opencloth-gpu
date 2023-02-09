@@ -5,7 +5,6 @@ find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(imgui REQUIRED)
 find_package(glm REQUIRED)
 
 set (LOCAL_DIR ./src)
@@ -16,11 +15,6 @@ include_directories(lib)
 add_subdirectory(lib)
 
 set(SRCS
-    ${LOCAL_DIR}/imgui_impl_glfw.cpp
-    ${LOCAL_DIR}/imgui_impl_opengl3.cpp
-    ${LOCAL_DIR}/include/imgui_impl_glfw.h
-    ${LOCAL_DIR}/include/imgui_impl_opengl3.h
-    ${LOCAL_DIR}/include/imgui_impl_opengl3_loader.h
     ${LOCAL_DIR}/Camera.cpp
     ${LOCAL_DIR}/Engine.cpp
     ${LOCAL_DIR}/main.cpp
@@ -30,6 +24,7 @@ set(SRCS
     ${LOCAL_DIR}/Textures.cpp
     ${LOCAL_DIR}/Window.cpp
     ${LOCAL_DIR}/World.cpp
+    ${LOCAL_DIR}/include/Shapes.h
 )
 
 set(outputName run)
@@ -42,7 +37,6 @@ target_link_libraries(${outputName} PUBLIC GLU)
 target_link_libraries(${outputName} PUBLIC GLEW)
 target_link_libraries(${outputName} PUBLIC FastNoise)
 target_link_libraries(${outputName} PUBLIC glad)
-target_link_libraries(${outputName} PUBLIC imgui::imgui)
 target_link_libraries(${outputName} PUBLIC lodepng)
 target_link_libraries(${outputName} PUBLIC glfw OpenGL::GL ${CMAKE_DL_LIBS})
 

@@ -23,46 +23,46 @@ int Window::initGlfw(const int & major, const int & minor)
 
 }
 
-void Window::initImGui()
-{
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    *m_IO = ImGui::GetIO(); (void)m_IO;
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-    ImGui_ImplOpenGL3_Init("#version 450");
-}
+// void Window::initImGui()
+// {
+//     IMGUI_CHECKVERSION();
+//     ImGui::CreateContext();
+//     *m_IO = ImGui::GetIO(); (void)m_IO;
+//     ImGui::StyleColorsDark();
+//     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+//     ImGui_ImplOpenGL3_Init("#version 450");
+// }
 
-void Window::beginGui(const std::string & Title)
-{
-    ImGui::Begin(Title.c_str());
-}
+// void Window::beginGui(const std::string & Title)
+// {
+//     ImGui::Begin(Title.c_str());
+// }
 
-void Window::endGui()
-{
-    ImGui::End();
-}
+// void Window::endGui()
+// {
+//     ImGui::End();
+// }
 
-void Window::drawGui()
-{
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
+// void Window::drawGui()
+// {
+//     ImGui::Render();
+//     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+// }
 
-void Window::checkBox(const std::string & title, bool & value)
-{
-    ImGui::Checkbox(title.c_str(), &value);
-}
+// void Window::checkBox(const std::string & title, bool & value)
+// {
+//     ImGui::Checkbox(title.c_str(), &value);
+// }
 
-void Window::slider(const std::string & title, float & value, float min, float max)
-{
-    ImGui::SliderFloat(title.c_str(), &value, min, max);
-}
+// void Window::slider(const std::string & title, float & value, float min, float max)
+// {
+//     ImGui::SliderFloat(title.c_str(), &value, min, max);
+// }
 
-bool Window::button(const std::string & title, float width, float height)
-{
-    return ImGui::Button(title.c_str(), ImVec2(width, height));
-}
+// bool Window::button(const std::string & title, float width, float height)
+// {
+//     return ImGui::Button(title.c_str(), ImVec2(width, height));
+// }
 
 int Window::initWindow()
 {
@@ -76,7 +76,7 @@ int Window::initWindow()
     }
     glfwMakeContextCurrent(m_window);
     
-    initImGui();
+    // initImGui();
     std::cout<<"window GLFW Cree"<<std::endl;
     return 0;
 }

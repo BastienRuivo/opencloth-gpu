@@ -186,8 +186,7 @@ void Engine::run()
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    std::vector<std::thread> weatherGen; 
+    
     bool endRegen = false;
     bool debugStart = true;
 
@@ -198,31 +197,8 @@ void Engine::run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         float ratioScreen = (float)m_engineWindow->getWidth() / (float)m_engineWindow->getHeight();
         
-        // if(m_isUIDisplayed)
-        // {
-        //     std::cout<<"Test 0"<<std::endl;
-        //     ImGui_ImplOpenGL3_NewFrame();
-        //     ImGui_ImplGlfw_NewFrame();
-        //     ImGui::NewFrame();
-        //     bool show = true;
-        // }
-        
-        
         m_world->update(time, ratioScreen);
         m_world->render();
-        
-
-        // if(m_isUIDisplayed)
-        // { 
-        //     m_engineWindow->beginGui("UI");
-        //     std::cout<<"test"<<std::endl;
-
-        //     //m_engineWindow->drawGui();
-        //     std::cout<<"test2"<<std::endl;
-
-        //     m_engineWindow->endGui();
-        //     std::cout<<"test3"<<std::endl;
-        // }
 
         keyboardHandler(m_world->getCam());
         if(m_inputPrevent >= 0) m_inputPrevent--;

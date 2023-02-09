@@ -1,9 +1,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <imgui.h>
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include <GLFW/glfw3.h>
 #include <string>
 #include <iostream>
@@ -17,14 +14,14 @@ class Window
 {
     public:
 
-    void beginGui(const std::string & Title);
-    void endGui();
-    void drawGui();
+    // void beginGui(const std::string & Title);
+    // void endGui();
+    // void drawGui();
 
 
-    void slider(const std::string & title, float & f, float min, float max);
-    bool button(const std::string & title, float width, float height);
-    void checkBox(const std::string & title, bool & value);
+    // void slider(const std::string & title, float & f, float min, float max);
+    // bool button(const std::string & title, float width, float height);
+    // void checkBox(const std::string & title, bool & value);
 
     /// Booléen de quittage de rendue
     bool m_quit = false;
@@ -85,7 +82,7 @@ class Window
     /// Position Y de la souris
     double m_yPos;
 
-    ImGuiIO * m_IO = new ImGuiIO;
+    // ImGuiIO * m_IO = new ImGuiIO;
 
     void initImGui();
 
