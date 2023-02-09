@@ -28,7 +28,7 @@ private:
   std::vector<std::string> m_texturesKeys;   //!< Identifiants des textures à utiliser
   bool                     is2D;             //!< Indique si les textures utilisées sont 2D
   bool                     has_face_culling; //!< Indique si l'objet doit cacher l'environnement
-
+  bool                     is_wireframe;     //!< Indique si l'objet doit être dessiné en fil de fer
 protected:
   /** @brief méthode abstraite qui doit être surchargée, permet de
    * passer les Uniforms au shader utilisé par l'objet
@@ -78,6 +78,13 @@ public:
     Object& setFaceCulling(bool face_culling);
     /// Renvoie true si le face culling est activé pour l'objet. renvoie false sinon
     bool  getFaceCulling() const;
+
+    /** @brief Permet d'activer/désactiver le face culling pour l'objet
+     * @param isWirframe la valeur à donner au paramètre
+     */
+    Object& setIsWireframe(bool isWirframe);
+    /// Renvoie true si le face culling est activé pour l'objet. renvoie false sinon
+    bool  getIsWireframe() const;
 
     void setUniform(Shader & Shader, const glm::mat4 & view, const glm::mat4 & projection);
 

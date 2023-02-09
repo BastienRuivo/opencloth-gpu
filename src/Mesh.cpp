@@ -254,14 +254,14 @@ Mesh * Mesh::initPlane(int divW, int divH) {
             vertices.push_back(glm::vec3(i, 0, j));
             if(i < divW - 1 && j < divH - 1) {
                 verticesOrder.push_back(i * divH + j);
-                verticesOrder.push_back(i * divH + j + 1);
                 verticesOrder.push_back((i + 1) * divH + j);
+                verticesOrder.push_back(i * divH + (j + 1));
+                verticesOrder.push_back(i * divH + (j + 1));
                 verticesOrder.push_back((i + 1) * divH + j);
-                verticesOrder.push_back(i * divH + j + 1);
-                verticesOrder.push_back((i + 1) * divH + j + 1);
+                verticesOrder.push_back((i + 1) * divH + (j + 1));
             }
             normals.push_back(glm::vec3(0, 1, 0));
-            uvs.push_back(glm::vec2(i, j));
+            uvs.push_back(glm::vec2(i/(float)divW, j/float(divH)));
         }
     }
 
@@ -288,7 +288,7 @@ Mesh * Mesh::initTissus(int divW, int divH) {
                 verticesOrder.push_back(i * divH + j + 1);
                 verticesOrder.push_back((i + 1) * divH + j + 1);
             }
-            normals.push_back(glm::vec3(0, 1, 0));
+            normals.push_back(glm::vec3(0, 0, 1));
             uvs.push_back(glm::vec2(i/(float)divW, j/(float)divH));
         }
     }

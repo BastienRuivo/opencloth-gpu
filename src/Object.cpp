@@ -3,7 +3,7 @@
 
 
 Object::Object() :
-is2D(false), has_face_culling(true), m_model(glm::mat4(1.f)),
+is2D(false), has_face_culling(true), m_model(glm::mat4(1.f)), is_wireframe(false),
 m_position({glm::vec3(0.f)}), m_shaderKey("basic2D"), m_rotation({glm::vec3(0.f)}), m_scale({glm::vec3(1.f)})
 {
 
@@ -115,8 +115,18 @@ void Object::render(Shader & Shader, Textures & textureManager, const glm::mat4 
     this->setUniform(Shader, view, projection);
     // Si l'objet ne doit pas masquer l'environnement
     // activer puis désactiver le face culling
-    if (!has_face_culling) glDisable(GL_CULL_FACE);
+    if (!has_face_culling) {
+        glDisable(GL_CULL_FACE);
+    }
+    GLint polygonMode;
+    glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
+    if(is_wireframe) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
 
+    if(m_texturesKeys.size() == 0) {
+        textureManager.use("default", 0);
+    }
     for(int i = 0; i < m_texturesKeys.size(); i++)
     {
         textureManager.use(m_texturesKeys[i], i);
@@ -132,12 +142,26 @@ void Object::render(Shader & Shader, Textures & textureManager, const glm::mat4 
     setUniforms(Shader, m_model, view, projection);
     draw();
 
-    if (!has_face_culling) glEnable(GL_CULL_FACE);
+    if (!has_face_culling) { 
+        glEnable(GL_CULL_FACE);
+    }
+    glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 }
 
 void Object::setMesh(Mesh * newMesh)
 {
     m_mesh = newMesh;
+}
+
+Object& Object::setIsWireframe(bool wireframe)
+{
+    is_wireframe = wireframe;
+    return *this;
+}
+
+bool Object::getIsWireframe() const
+{
+    return is_wireframe;
 }
 
 

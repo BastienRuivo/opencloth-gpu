@@ -55,13 +55,13 @@ void Engine::init(uint w, uint h)
     m_shader.setInt("basic2D", "texture1", 0);
     m_shader.setInt("basic2D", "texture2", 1);
 
+    m_texturesManager.load("default", "./data/default.png");
     m_texturesManager.load("kirbo", "./data/kirbo.png");
     m_texturesManager.load("sonc", "./data/sonc.png");
 
     m_world = new World(m_texturesManager, m_shader);
     m_world->getCam()->setLastX(w / 2.f);
     m_world->getCam()->setLastY(h / 2.f);
-    m_world->getCam()->m_position.y = 0.5f;
     m_world->m_projection = mat4(1.f);
 
     srand(time(NULL));
@@ -180,11 +180,10 @@ void Engine::run()
     
     glfwSetInputMode(m_engineWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     float time = 0;
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
@@ -197,7 +196,7 @@ void Engine::run()
         glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         float ratioScreen = (float)m_engineWindow->getWidth() / (float)m_engineWindow->getHeight();
-        
+        glEnable(GL_CULL_FACE);
         m_world->update(time, ratioScreen);
         m_world->render();
 

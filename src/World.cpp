@@ -14,13 +14,13 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setTextureKeys({"sonc"});
 
     Object * defaultPlane = new Object(Plane(glm::vec3(0.f), 10, 10));
-    defaultPlane->setPosition(glm::vec3(0.f, 0.f, 0.f))
+    defaultPlane->setPosition(glm::vec3(-5.f, 0.f, -5.f))
+                .setIsWireframe(true)
                 .setShaderKey("basic2D")
-                .setFaceCulling(true)
-                .setTextureKeys({"sonc"});
+                .setFaceCulling(true);
 
-    Object * defaultTissus = new Object(Tissus(glm::vec3(0.f), 20, 20));
-    defaultTissus->setPosition(glm::vec3(0.f, 0.f, 0.f))
+    Object * defaultTissus = new Object(Tissus(glm::vec3(0.f), 50, 50));
+    defaultTissus->setPosition(glm::vec3(0.f, 0.f, -5.f))
                 .setShaderKey("basic2D")
                 .setFaceCulling(true)
                 .setTextureKeys({"kirbo"});
