@@ -26,7 +26,7 @@ inline Solver::Solver(const std::vector<Spring*> &springs,
 
 inline void Solver::updateSprings() {
     for (int i = 0; i < springs.size(); i++) {
-        springs[i].update();
+        
     }
 }
 
