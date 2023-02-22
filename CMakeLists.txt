@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(Physx-Test)
+project(Physx-Test LANGUAGES C CXX CUDA)
 set(CMAKE_BUILD_TYPE RELEASE)
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -27,6 +27,10 @@ set(SRCS
     ${LOCAL_DIR}/include/Shape.h
 )
 
+set(SRCSCUDA
+    ${LOCAL_DIR}/main.cu
+)
+
 set(outputName run)
 add_executable(${outputName} ${LIBSRCS} ${SRCS})
 target_include_directories(${outputName} PUBLIC ${OPENGL_INCLUDE_DIR})
@@ -39,6 +43,10 @@ target_link_libraries(${outputName} PUBLIC FastNoise)
 target_link_libraries(${outputName} PUBLIC glad)
 target_link_libraries(${outputName} PUBLIC lodepng)
 target_link_libraries(${outputName} PUBLIC glfw OpenGL::GL ${CMAKE_DL_LIBS})
+
+
+set(outputNameCUDA cuda)
+add_executable(${outputNameCUDA} ${SRCSCUDA})
 
 file(COPY data DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})

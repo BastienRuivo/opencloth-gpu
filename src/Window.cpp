@@ -1,10 +1,16 @@
 #include "Window.h"
 
+void ErrorCallback(int, const char* err_str)
+{
+    std::cout << "GLFW Error: " << err_str << std::endl;
+}
 int Window::initGlfw(const int & major, const int & minor)
 {
     std::cout<<"initialisation GLFW"<<std::endl;
+    glfwSetErrorCallback(ErrorCallback);
     // initialisation
-    if(glfwInit() != GLFW_TRUE)
+    const int ret = glfwInit();
+    if (GL_FALSE == ret)
     {
         std::cerr<<"ERREUR INITIALISATION GLFW"<<std::endl;
         return -1;
@@ -16,12 +22,12 @@ int Window::initGlfw(const int & major, const int & minor)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor); // Version précise de la majeur (le 8 de 4.8 par ex)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    
-
     std::cout<<"GLFW Initilise"<<std::endl;
     return 0;
 
 }
+
+
 
 // void Window::initImGui()
 // {
@@ -70,7 +76,7 @@ int Window::initWindow()
     m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
     if(m_window == nullptr)
     {
-        std::cerr<<"ERREUR CREATION window GLFW"<<std::endl;
+        std::cerr<<"ERREUR CREATION window GLFW" <<std::endl;
         glfwTerminate(); // On termine glfw en cas d'erreur.
         return -1;
     }
