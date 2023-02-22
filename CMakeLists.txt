@@ -17,7 +17,7 @@ add_subdirectory(lib)
 set(SRCS
     ${LOCAL_DIR}/Camera.cpp
     ${LOCAL_DIR}/Engine.cpp
-    ${LOCAL_DIR}/main.cpp
+    ${LOCAL_DIR}/main.cu
     ${LOCAL_DIR}/Mesh.cpp
     ${LOCAL_DIR}/Object.cpp
     ${LOCAL_DIR}/Shader.cpp
@@ -27,9 +27,6 @@ set(SRCS
     ${LOCAL_DIR}/include/Shape.h
 )
 
-set(SRCSCUDA
-    ${LOCAL_DIR}/main.cu
-)
 
 set(outputName run)
 add_executable(${outputName} ${LIBSRCS} ${SRCS})
@@ -43,10 +40,6 @@ target_link_libraries(${outputName} PUBLIC FastNoise)
 target_link_libraries(${outputName} PUBLIC glad)
 target_link_libraries(${outputName} PUBLIC lodepng)
 target_link_libraries(${outputName} PUBLIC glfw OpenGL::GL ${CMAKE_DL_LIBS})
-
-
-set(outputNameCUDA cuda)
-add_executable(${outputNameCUDA} ${SRCSCUDA})
 
 file(COPY data DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})

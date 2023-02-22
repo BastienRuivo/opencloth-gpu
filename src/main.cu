@@ -1,16 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <cuda_runtime.h>
-#include <cuda.h>
+#include <iostream>
+#include "Engine.h"
 
-__global__ void cuda_hello(){
-	printf("Hello World du GPU\n");
-}
 
-int main(void) {
-	printf("Hello World du CPU\n");
-	cuda_hello<<<1,1>>>();
-    cudaDeviceSynchronize();
-    printf("Fin du programme\n");
-	return EXIT_SUCCESS;
+int main(int argc, char** argv) {
+	Engine engine;
+	engine.init();
+	engine.setBackgroundColor(0.2f, 0.3f, 0.3f, 1.f);
+	engine.run();
+	return 0;
 }
