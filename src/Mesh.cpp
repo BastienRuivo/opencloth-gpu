@@ -23,7 +23,7 @@ void Mesh::initVBO()
     // Permet de créer une zone mémoire dans la CG pour stocker le vertice;
     glGenBuffers(1, &m_VBO); // Genere l'ID du buffer
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO); // Attribution de son type
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertex.size(), &m_vertex[0], GL_STATIC_DRAW); // Lie les VAOdata auVAO m_VAO
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertex.size(), &m_vertex[0], GL_DYNAMIC_DRAW); // Lie les VAOdata auVAO m_VAO
 }
 
 void Mesh::initVAO()
@@ -31,7 +31,7 @@ void Mesh::initVAO()
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);// Bind l'objet a la CG
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO); // Lie le buffer de data aux attribues du m_VAO
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertex.size(), &m_vertex[0], GL_STATIC_DRAW); // Lie les VAOdata auVAO m_VAO
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertex.size(), &m_vertex[0], GL_DYNAMIC_DRAW); // Lie les VAOdata auVAO m_VAO
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, /*9*/ 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -47,7 +47,7 @@ void Mesh::initEBO()
 {
     glGenBuffers(1, &m_EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_indices.size(), &m_indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_indices.size(), &m_indices[0], GL_DYNAMIC_DRAW);
 }
 
 uint Mesh::getVAO() const
@@ -95,13 +95,18 @@ glm::vec3 Mesh::getVertex(uint index) const
     return glm::vec3(m_vertex[index * 8], m_vertex[index * 8 + 1], m_vertex[index * 8 + 2]);
 }
 
-Mesh& Mesh::updateVertex(std::vector<glm::vec3> vertices)
-{
-    for(int i = 0; i < vertices.size(); i+=8) {
-        m_vertex[i * 8] = vertices[i].x;
+Mesh& Mesh::updateVertex(const std::vector<glm::vec3> & vertices)
+{   
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    for(int i = 0; i < vertices.size(); i++) {
+        m_vertex[i * 8]     = vertices[i].x;
         m_vertex[i * 8 + 1] = vertices[i].y;
         m_vertex[i * 8 + 2] = vertices[i].z;
     }
+    //Update the mesh in the GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertex.size(), &m_vertex[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     return *this;
 }
 

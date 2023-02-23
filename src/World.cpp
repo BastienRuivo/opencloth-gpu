@@ -14,13 +14,13 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setFaceCulling(true)
                 .setTextureKeys({"sonc"});
 
-    Object * defaultPlane = new Object(Plane(glm::vec3(0.f), 10, 10));
+    Object * defaultPlane = new Object(Plane(glm::vec3(0.f, -5.f, 0.f), 10, 10));
     defaultPlane->setPosition(glm::vec3(-5.f, 0.f, -5.f))
                 .setIsWireframe(true)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
-    Solver * solver = new Solver(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.005);
-    Object * defaultTissus = new TissusObject(Tissus(glm::vec3(0.f), 50, 50), solver);
+    Solver * solver = new Solver(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.0025);
+    Object * defaultTissus = new TissusObject(Tissus(glm::vec3(0.f, 5.f, 0.f), 70, 70), solver);
     defaultTissus->setPosition(glm::vec3(0.f, 0.f, -5.f))
                 .setShaderKey("basic2D")
                 .setFaceCulling(true)
@@ -41,23 +41,22 @@ void World::addObject(Object * obj)
     m_objects.push_back(obj);
 }
 
-void World::render()
+void World::render(float ratioScreen)
 {
+    m_projection = glm::perspective(glm::radians(70.f), ratioScreen, 0.1f, 1000.f);
+
+    m_cam->update();
     for(int i = 0; i < m_objects.size(); i++)
     {
         m_objects[i]->render(m_shader, m_textures, m_cam->getView(), m_projection);
     }
 }
 
-void World::update(float time, float ratioScreen)
+void World::update(float time)
 {
-  //y a-t-il un intéret à avoir time et glfwGetTime?
-  m_time = glfwGetTime();
+    m_time = glfwGetTime();
 
-  m_projection = glm::perspective(glm::radians(70.f), ratioScreen, 0.1f, 1000.f);
-
-  m_cam->update();
-
+  
   for(const auto & o : m_objects)
   {
       o->update(Tps);

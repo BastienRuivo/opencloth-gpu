@@ -116,6 +116,12 @@ void Engine::keyboardHandler(Camera * Cam)
             m_inputPrevent = 10;
         }
 
+         if(glfwGetKey(m_engineWindow->getWindow(), GLFW_KEY_Y) == GLFW_PRESS)
+        {
+            m_isPaused = !m_isPaused;
+            m_inputPrevent = 10;
+        }
+
         if(glfwGetKey(m_engineWindow->getWindow(), GLFW_KEY_F11) == GLFW_PRESS)
         {
             if(m_isFullscreen)
@@ -197,8 +203,10 @@ void Engine::run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         float ratioScreen = (float)m_engineWindow->getWidth() / (float)m_engineWindow->getHeight();
         glEnable(GL_CULL_FACE);
-        m_world->update(time, ratioScreen);
-        m_world->render();
+        if(!m_isPaused) {
+            m_world->update(time);
+        }
+        m_world->render(ratioScreen);
 
         keyboardHandler(m_world->getCam());
         if(m_inputPrevent >= 0) m_inputPrevent--;

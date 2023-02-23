@@ -3,7 +3,10 @@
 
 void SpringInfo::updateDampingFactor()
 {
-    stiffness != 0 ? dampingFactor = damping / stiffness : dampingFactor = 1000.f;
+    if(stiffness == 0)
+        dampingFactor = 1000.f;
+    else
+        dampingFactor = damping / stiffness;
 }
 
 SpringInfo & SpringInfo::operator=(const SpringInfo& s)

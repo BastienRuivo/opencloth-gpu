@@ -28,6 +28,7 @@ private:
     void initVBO(); //!< initialise le VBO du mesh
     void initVAO(); //!< initialise le Vertex Array Attribue 
     void initEBO(); //!< initialise l'EBO du mesh
+    int t = 0;
 
 public:
     Mesh();
@@ -61,7 +62,7 @@ public:
     static Mesh * initPlane(int divW, int divH);
     static Mesh * initTissus(int divW, int divH);
 
-    Mesh& updateVertex(std::vector<glm::vec3> vertices);
+    Mesh& updateVertex(const std::vector<glm::vec3> & vertices);
 };
 
 

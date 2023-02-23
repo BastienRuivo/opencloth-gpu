@@ -14,7 +14,6 @@ Spring::Spring(uint p1, uint p2, SpringInfo *info, double restLength) {
     id = -1;
 
     param->SetRestLength(restLength);
-
     param->updateDampingFactor();
 }
 
