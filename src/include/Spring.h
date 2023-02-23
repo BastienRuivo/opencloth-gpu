@@ -1,4 +1,6 @@
-#pragma once
+
+#ifndef SPRING_H
+#define SPRING_H
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,31 +9,32 @@
 #include <iostream>
 
 #include "SpringInfo.h"
-#include "Particle.h"
 
 
 class Spring
 {
 private:
-    int id;
-    int PA;
-    int PB;
+    uint id;
+    uint PA;
+    uint PB;
     SpringInfo * param;
 
 public:
     Spring();
-    Spring(int PA, int PB, SpringInfo * param);
+    Spring(uint PA, uint PB, SpringInfo * param, double restLength);
     Spring(const Spring & s);
 
-    void setId(int id);
-    void setParticleA(int PA);
-    void setParticleB(int PB);
+    void setId(uint id);
+    void setParticleA(uint PA);
+    void setParticleB(uint PB);
     void setParam(SpringInfo * param);
 
-    glm::vec3 getForce();
+    uint getId() const; 
+    uint getParticleA() const; 
+    uint getParticleB() const; 
+    SpringInfo * getParam() const;  
 
-    int getId() const;
-    int getParticleA() const;
-    int getParticleB() const;
-    SpringInfo * getParam() const;
+    ~Spring();
 };
+
+#endif

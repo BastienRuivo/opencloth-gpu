@@ -65,6 +65,11 @@ uint Mesh::getIndicesCount() const
     return m_indices.size();
 }
 
+std::vector<uint> Mesh::getIndices() const
+{
+    return m_indices;
+}
+
 Mesh& Mesh::setPolygon(std::vector<glm::vec3> vertices, std::vector<uint> verticesOrder, std::vector<glm::vec3> normals, std::vector<glm::vec2> uvs)
 {
     for(int i = 0; i < vertices.size(); i++) {
@@ -82,6 +87,21 @@ Mesh& Mesh::setPolygon(std::vector<glm::vec3> vertices, std::vector<uint> vertic
     }
     m_indices = verticesOrder;
     init(); //sure?
+    return *this;
+}
+
+glm::vec3 Mesh::getVertex(uint index) const
+{
+    return glm::vec3(m_vertex[index * 8], m_vertex[index * 8 + 1], m_vertex[index * 8 + 2]);
+}
+
+Mesh& Mesh::updateVertex(std::vector<glm::vec3> vertices)
+{
+    for(int i = 0; i < vertices.size(); i+=8) {
+        m_vertex[i * 8] = vertices[i].x;
+        m_vertex[i * 8 + 1] = vertices[i].y;
+        m_vertex[i * 8 + 2] = vertices[i].z;
+    }
     return *this;
 }
 

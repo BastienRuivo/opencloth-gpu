@@ -22,14 +22,13 @@
  */
 class Object
 {
-private:
+protected:
   Mesh * m_mesh;
   std::string              m_shaderKey;      //!< Identifiant du shader à utiliser
   std::vector<std::string> m_texturesKeys;   //!< Identifiants des textures à utiliser
   bool                     is2D;             //!< Indique si les textures utilisées sont 2D
   bool                     has_face_culling; //!< Indique si l'objet doit cacher l'environnement
   bool                     is_wireframe;     //!< Indique si l'objet doit être dessiné en fil de fer
-protected:
   /** @brief méthode abstraite qui doit être surchargée, permet de
    * passer les Uniforms au shader utilisé par l'objet
    * 
@@ -61,6 +60,10 @@ public:
      * @param vAxis axe
      */
     Object& rotate(float angle, glm::vec3 vAxis);
+
+    virtual void update(int Tps) {
+      // Do nothing
+    }
 
     /** @brief Redimensionne l'objet selon les axes x, y et z
      * @param vScale vecteur de redimensionnement

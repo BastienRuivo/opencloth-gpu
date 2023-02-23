@@ -4,6 +4,7 @@
 
 #include "Camera.h"
 #include "Object.h"
+#include "TissusObject.h"
 
 /** @class World
  * @brief Gère les objets, un peu comme une scène sur unity et contient la matrice du monde
@@ -58,6 +59,8 @@ class World
     Shader m_shader;
     /// Le temps écoulé depuis le lancement du monde
     float m_time;
+    /// 
+    float Tps;
 
 };
 

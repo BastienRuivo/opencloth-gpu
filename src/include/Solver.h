@@ -1,9 +1,7 @@
-#pragma once
+#ifndef SOLVER_H
+#define SOLVER_H
 
 #include <vector>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include "Spring.h"
 
@@ -20,24 +18,30 @@ private:
     glm::vec3 gravity;
     glm::vec3 wind;
 
+    float viscosity;
+
     float timeStep;
     float deltaT;
 
     void updateSprings();
     void updateAcceleration();
+    void solve(int tps);
     void resetForce();
 
 public:
     Solver(
+        const glm::vec3 &gravity, 
+        const glm::vec3 &wind,
+        float viscosity,
+        float deltaT);
+    void update(int Tps);
+    void setData(
         const std::vector<Spring*> &spring,
         const std::vector<glm::vec3> &position, 
         const std::vector<glm::vec3> &velocity, 
         const std::vector<glm::vec3> &acceleration,
         const std::vector<glm::vec3> &force, 
-        const std::vector<float> &mass, 
-        const glm::vec3 &gravity, 
-        const glm::vec3 &wind,
-        float timeStep, 
-        float deltaT);
-    void update();
+        const std::vector<float> &mass);
 };
+
+#endif

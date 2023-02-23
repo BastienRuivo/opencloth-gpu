@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
 {
+    Tps = 0;
     std::cout<<"____Initialisation du monde____"<<std::endl;
     m_cam = new Camera();
     m_projection = glm::mat4(1.f);
@@ -18,8 +19,8 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setIsWireframe(true)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
-
-    Object * defaultTissus = new Object(Tissus(glm::vec3(0.f), 50, 50));
+    Solver * solver = new Solver(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.005);
+    Object * defaultTissus = new TissusObject(Tissus(glm::vec3(0.f), 50, 50), solver);
     defaultTissus->setPosition(glm::vec3(0.f, 0.f, -5.f))
                 .setShaderKey("basic2D")
                 .setFaceCulling(true)
@@ -56,6 +57,13 @@ void World::update(float time, float ratioScreen)
   m_projection = glm::perspective(glm::radians(70.f), ratioScreen, 0.1f, 1000.f);
 
   m_cam->update();
+
+  for(const auto & o : m_objects)
+  {
+      o->update(Tps);
+  }
+
+  Tps++;
 }
 
 Camera* World::getCam()

@@ -1,61 +1,63 @@
 #include "Spring.h"
 
-inline Spring::Spring() {
+Spring::Spring() {
     PA = -1;
     PB = -1;
     param = nullptr;
     id = -1;
 }
 
-inline Spring::Spring(int p1, int p2, SpringInfo *info) {
+Spring::Spring(uint p1, uint p2, SpringInfo *info, double restLength) {
     PA = p1;
     PB = p2;
     param = new SpringInfo(*info);
     id = -1;
 
+    param->SetRestLength(restLength);
+
     param->updateDampingFactor();
 }
 
-inline Spring::Spring(const Spring &s) {
+Spring::Spring(const Spring &s) {
     PA = s.PA;
     PB = s.PB;
     param = new SpringInfo(*s.param);
     id = s.id;
 }
 
-inline int Spring::getId() const {
+uint Spring::getId() const {
     return id;
 }
 
-inline int Spring::getParticleA() const {
+uint Spring::getParticleA() const {
     return PA;
 }
 
-inline int Spring::getParticleB() const {
+uint Spring::getParticleB() const {
     return PB;
 }
 
-inline SpringInfo *Spring::getParam() const {
+SpringInfo *Spring::getParam() const {
     return param;
 }
 
-inline void Spring::setId(int id) {
+void Spring::setId(uint id) {
     this->id = id;
 }
 
-inline void Spring::setParticleA(int p) {
+void Spring::setParticleA(uint p) {
     PA = p;
 }
 
-inline void Spring::setParticleB(int p) {
+void Spring::setParticleB(uint p) {
     PB = p;
 }
 
-inline void Spring::setParam(SpringInfo *info) {
+void Spring::setParam(SpringInfo *info) {
     param = new SpringInfo(*info);
 }
 
-inline Spring::~Spring() {
+Spring::~Spring() {
     PA = -1;
     PB = -1;
     delete param;

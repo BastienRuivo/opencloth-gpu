@@ -40,6 +40,10 @@ public:
     uint getVertexCount() const;
     uint getIndicesCount() const;
 
+    std::vector<uint> getIndices() const;
+
+    glm::vec3 getVertex(uint index) const;
+
     /** @brief remplit les vertices du mesh
      * @param vertices Vecteur contenant toutes les vertices
      * @param verticesOrder indices de l'ordre ou utiliser les vertices
@@ -56,6 +60,8 @@ public:
     static Mesh * initCube();
     static Mesh * initPlane(int divW, int divH);
     static Mesh * initTissus(int divW, int divH);
+
+    Mesh& updateVertex(std::vector<glm::vec3> vertices);
 };
 
 

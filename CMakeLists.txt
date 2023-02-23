@@ -15,15 +15,19 @@ include_directories(lib)
 add_subdirectory(lib)
 
 set(SRCS
-    ${LOCAL_DIR}/Camera.cu
-    ${LOCAL_DIR}/Engine.cu
-    ${LOCAL_DIR}/main.cu
-    ${LOCAL_DIR}/Mesh.cu
-    ${LOCAL_DIR}/Object.cu
-    ${LOCAL_DIR}/Shader.cu
-    ${LOCAL_DIR}/Textures.cu
-    ${LOCAL_DIR}/Window.cu
-    ${LOCAL_DIR}/World.cu
+    ${LOCAL_DIR}/Camera.cpp
+    ${LOCAL_DIR}/Engine.cpp
+    ${LOCAL_DIR}/main.cpp
+    ${LOCAL_DIR}/Mesh.cpp
+    ${LOCAL_DIR}/Object.cpp
+    ${LOCAL_DIR}/Shader.cpp
+    ${LOCAL_DIR}/Textures.cpp
+    ${LOCAL_DIR}/Window.cpp
+    ${LOCAL_DIR}/World.cpp
+    ${LOCAL_DIR}/SpringInfo.cpp
+    ${LOCAL_DIR}/Spring.cpp
+    ${LOCAL_DIR}/Solver.cpp
+    ${LOCAL_DIR}/TissusObject.cpp
     ${LOCAL_DIR}/include/Shape.h
 )
 
