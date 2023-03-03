@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Object.h"
 #include "TissusObject.h"
+#include "SolverExplicitCPU.h"
 
 /** @class World
  * @brief Gère les objets, un peu comme une scène sur unity et contient la matrice du monde

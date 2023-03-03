@@ -27,6 +27,7 @@ set(SRCS
     ${LOCAL_DIR}/SpringInfo.cpp
     ${LOCAL_DIR}/Spring.cpp
     ${LOCAL_DIR}/Solver.cpp
+    ${LOCAL_DIR}/SolverExplicitCPU.cpp
     ${LOCAL_DIR}/TissusObject.cpp
     ${LOCAL_DIR}/include/Shape.h
 )

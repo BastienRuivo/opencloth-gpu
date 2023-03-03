@@ -19,7 +19,7 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setIsWireframe(true)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
-    Solver * solver = new Solver(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.0025);
+    SolverExplicitCPU * solver = new SolverExplicitCPU(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.0025);
     Object * defaultTissus = new TissusObject(Tissus(glm::vec3(0.f, 5.f, 0.f), 70, 70), solver);
     defaultTissus->setPosition(glm::vec3(0.f, 0.f, -5.f))
                 .setShaderKey("basic2D")

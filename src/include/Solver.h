@@ -7,7 +7,7 @@
 
 class Solver
 {
-private:
+protected:
     std::vector<Spring*> *springs;
     std::vector<glm::vec3> *position;
     std::vector<glm::vec3> *velocity;
@@ -23,10 +23,10 @@ private:
     float timeStep;
     float deltaT;
 
-    void updateSprings();
-    void updateAcceleration();
-    void solve(int tps);
-    void resetForce();
+    virtual void updateSprings() = 0;
+    virtual void updateAcceleration() = 0;
+    virtual void solve(int tps) = 0;
+    virtual void resetForce() = 0;
 
 public:
     Solver(
@@ -34,14 +34,14 @@ public:
         const glm::vec3 &wind,
         float viscosity,
         float deltaT);
-    void update(int Tps);
-    void setData(
+    virtual void update(int Tps) = 0;
+    virtual void setData(
         std::vector<Spring*> * spring,
         std::vector<glm::vec3> * position, 
         std::vector<glm::vec3> * velocity, 
         std::vector<glm::vec3> * acceleration,
         std::vector<glm::vec3> * force, 
-        std::vector<float> * mass);
+        std::vector<float> * mass) = 0;
 };
 
 #endif
