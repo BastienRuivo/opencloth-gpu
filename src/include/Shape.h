@@ -33,8 +33,10 @@ class Tissus {
     glm::vec3 center;
     int divW;
     int divH;
+    float mass;
 
-    Tissus(glm::vec3 center, int divW, int divH) {
+    Tissus(float mass, glm::vec3 center, int divW, int divH) {
+        this->mass = mass;
         this->center = center;
         this->divW = divW;
         this->divH = divH;

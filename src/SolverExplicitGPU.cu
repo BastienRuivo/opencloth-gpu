@@ -30,11 +30,23 @@ void solveGPU(glm::vec3 *position,
     }
 }
 
+__global__ void updateSpringsGPU(glm::vec3 * position, glm::vec3 * velocity, Spring * springs, ForceToAdd * result, int size) {  
+    int gtid = blockIdx.x*blockDim.x+threadIdx.x;
 
-__global__ void updateTableInt(int * table, int size) {
-    int gtid = threadIdx.x ;
-    if (gtid < size) {
-        table[gtid] = gtid;
+    if(gtid < size){
+        int A = springs[gtid].PA;
+        int B = springs[gtid].PB;
+
+        glm::vec3 dPos = position[A] - position[B];
+        glm::vec3 dVit = velocity[A] - velocity[B];
+        glm::vec3 dPosNorm = glm::normalize(dPos);
+
+        float diffLength = glm::length(dPos) - springs[gtid].restLength;
+
+        glm::vec3 fRaideur = springs[gtid].stiffness * diffLength * dPosNorm;
+        glm::vec3 fAmortissement = springs[gtid].damping * dPosNorm * glm::dot(dVit, dPosNorm);
+
+        result[gtid] = {A, B, fRaideur - fAmortissement}; 
     }
 }
 
@@ -49,7 +61,7 @@ SolverExplicitGPU::SolverExplicitGPU(
 
 
 void SolverExplicitGPU::setData(
-        std::vector<Spring*> * spring,
+        std::vector<Spring> * spring,
         std::vector<glm::vec3> * position, 
         std::vector<glm::vec3> * velocity, 
         std::vector<glm::vec3> * acceleration,
@@ -63,6 +75,13 @@ void SolverExplicitGPU::setData(
     this->force = force;
     this->mass = mass;
     
+    this->forcesToAdd.resize(springs->size());
+    for (int i = 0; i < springs->size(); i++)
+    {
+        this->forcesToAdd[i] = {0, 0, glm::vec3(0.0f)};
+    }
+    
+
     int length = position->size();
 
     cudaMalloc( (void**) &this->position_gpu, length * sizeof(glm::vec3) );
@@ -71,11 +90,13 @@ void SolverExplicitGPU::setData(
     cudaMalloc( (void**) &this->force_gpu, length * sizeof(glm::vec3) );
     cudaMalloc( (void**) &this->mass_gpu, length * sizeof(float));
     cudaMalloc( (void**) &this->springs_gpu, spring->size() * sizeof(Spring) );
+    cudaMalloc( (void**) &this->forcesToAdd_gpu, spring->size() * sizeof(ForceToAdd));
 
 
     cudaMemcpy(mass_gpu, &(*mass)[0], length * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(velocity_gpu, &(*velocity)[0], length * sizeof(glm::vec3), cudaMemcpyHostToDevice);
     cudaMemcpy(position_gpu, &(*position)[0], length * sizeof(glm::vec3), cudaMemcpyHostToDevice);
+    cudaMemcpy(forcesToAdd_gpu, &forcesToAdd[0], spring->size() * sizeof(ForceToAdd), cudaMemcpyHostToDevice);
 }
 
 
@@ -98,22 +119,22 @@ void SolverExplicitGPU::solve(int tps) {
 }
 
 void SolverExplicitGPU::updateSprings() {
-    for(int i = 0; i < springs->size(); i++){
-        int A = springs->at(i)->getParticleA();
-        int B = springs->at(i)->getParticleB();
+    int length = springs->size();
+    cudaMemcpy(springs_gpu, &(*springs)[0], length * sizeof(Spring), cudaMemcpyHostToDevice);
 
-        glm::vec3 dPos = position->at(A) - position->at(B);
-        glm::vec3 dVit = velocity->at(A) - velocity->at(B);
-        glm::vec3 dPosNorm = glm::normalize(dPos);
+    int blockSize = 1024;
+    int gridSize = (int)ceil((float)length/blockSize);
 
-        float diffLength = glm::length(dPos) - springs->at(i)->getParam()->GetRestLength();
+    updateSpringsGPU<<<gridSize, blockSize>>>(position_gpu, velocity_gpu, springs_gpu, forcesToAdd_gpu, length);
 
-        glm::vec3 fRaideur = springs->at(i)->getParam()->GetStiffness() * diffLength * dPosNorm;
-        glm::vec3 fAmortissement = springs->at(i)->getParam()->GetDamping() * dPosNorm * glm::dot(dVit, dPosNorm);
-        force->at(A) = force->at(A) - fRaideur - fAmortissement;
-        force->at(B) = force->at(B) + fRaideur  + fAmortissement;
+    cudaMemcpy(&forcesToAdd[0], forcesToAdd_gpu, length * sizeof(ForceToAdd), cudaMemcpyDeviceToHost);
+
+    for(int i = 0; i < length; i++){
+        force->at(forcesToAdd[i].A) -= forcesToAdd[i].force;
+        force->at(forcesToAdd[i].B) += forcesToAdd[i].force;
     }
 }
+
 
 
 void SolverExplicitGPU::update(int Tps){

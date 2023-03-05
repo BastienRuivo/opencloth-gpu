@@ -10,31 +10,27 @@
 
 #include "SpringInfo.h"
 
-
-class Spring
+struct Spring
 {
-private:
+    // Identifiant
     uint id;
+
+    // Particule A
     uint PA;
+
+    // Particule B
     uint PB;
-    SpringInfo * param;
 
-public:
-    Spring();
-    Spring(uint PA, uint PB, SpringInfo * param, double restLength);
-    Spring(const Spring & s);
+	// Longueur au repos
+	float restLength;
 
-    void setId(uint id);
-    void setParticleA(uint PA);
-    void setParticleB(uint PB);
-    void setParam(SpringInfo * param);
+    // Raideur
+	float stiffness;
 
-    uint getId() const; 
-    uint getParticleA() const; 
-    uint getParticleB() const; 
-    SpringInfo * getParam() const;  
-
-    ~Spring();
+    // Amortissement
+	float damping;
+	
+	// Facteur d amortissement
+	float dampingFactor;
 };
-
 #endif

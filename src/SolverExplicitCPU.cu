@@ -8,7 +8,7 @@ SolverExplicitCPU::SolverExplicitCPU(
 }
 
 void SolverExplicitCPU::setData(
-        std::vector<Spring*> * spring,
+        std::vector<Spring> * spring,
         std::vector<glm::vec3> * position, 
         std::vector<glm::vec3> * velocity, 
         std::vector<glm::vec3> * acceleration,
@@ -21,22 +21,24 @@ void SolverExplicitCPU::setData(
     this->acceleration = acceleration;
     this->force = force;
     this->mass = mass;
+
+    this->forcesToAdd.resize(springs->size());
 }
 
 void SolverExplicitCPU::updateSprings() {
     
     for(int i = 0; i < springs->size(); i++){
-        int A = springs->at(i)->getParticleA();
-        int B = springs->at(i)->getParticleB();
+        int A = springs->at(i).PA;
+        int B = springs->at(i).PB;
 
         glm::vec3 dPos = position->at(A) - position->at(B);
         glm::vec3 dVit = velocity->at(A) - velocity->at(B);
         glm::vec3 dPosNorm = glm::normalize(dPos);
 
-        float diffLength = glm::length(dPos) - springs->at(i)->getParam()->GetRestLength();
+        float diffLength = glm::length(dPos) - springs->at(i).restLength;
 
-        glm::vec3 fRaideur = springs->at(i)->getParam()->GetStiffness() * diffLength * dPosNorm;
-        glm::vec3 fAmortissement = springs->at(i)->getParam()->GetDamping() * dPosNorm * glm::dot(dVit, dPosNorm);
+        glm::vec3 fRaideur = springs->at(i).stiffness * diffLength * dPosNorm;
+        glm::vec3 fAmortissement = springs->at(i).damping * dPosNorm * glm::dot(dVit, dPosNorm);
         force->at(A) = force->at(A) - fRaideur - fAmortissement;
         force->at(B) = force->at(B) + fRaideur  + fAmortissement;
     }

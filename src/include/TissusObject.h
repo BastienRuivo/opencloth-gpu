@@ -14,7 +14,7 @@ class TissusObject : public Object
 
   private:
   Solver * solver;
-  std::vector<Spring*> springs;
+  std::vector<Spring> springs;
   std::vector<glm::vec3> position;
   std::vector<glm::vec3> velocity;
   std::vector<glm::vec3> acceleration;

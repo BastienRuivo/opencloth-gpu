@@ -11,6 +11,8 @@ private:
     Spring *springs_gpu;
     float *mass_gpu;
 
+    ForceToAdd *forcesToAdd_gpu;
+
     // float *viscosity_gpu = new float[ length ];
     // float *deltaT_gpu = new float[ length ];
 public:
@@ -22,7 +24,7 @@ public:
 
     void update(int Tps);
     void setData(
-        std::vector<Spring*> * spring,
+        std::vector<Spring> * spring,
         std::vector<glm::vec3> * position, 
         std::vector<glm::vec3> * velocity, 
         std::vector<glm::vec3> * acceleration,

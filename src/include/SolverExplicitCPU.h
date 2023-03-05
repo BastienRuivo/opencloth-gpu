@@ -15,7 +15,7 @@ public:
 
     void update(int Tps);
     void setData(
-        std::vector<Spring*> * spring,
+        std::vector<Spring> * spring,
         std::vector<glm::vec3> * position, 
         std::vector<glm::vec3> * velocity, 
         std::vector<glm::vec3> * acceleration,
