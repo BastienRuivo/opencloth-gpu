@@ -120,6 +120,7 @@ void Engine::keyboardHandler(Camera * Cam)
         {
             m_isPaused = !m_isPaused;
             m_inputPrevent = 10;
+            std::cout<<"Pause = " << m_isPaused<<std::endl;
         }
 
         if(glfwGetKey(m_engineWindow->getWindow(), GLFW_KEY_F11) == GLFW_PRESS)

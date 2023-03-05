@@ -24,9 +24,7 @@ protected:
     float deltaT;
 
     virtual void updateSprings() = 0;
-    virtual void updateAcceleration() = 0;
     virtual void solve(int tps) = 0;
-    virtual void resetForce() = 0;
 
 public:
     Solver(

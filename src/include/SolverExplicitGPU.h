@@ -1,13 +1,20 @@
 #pragma once
-
 #include "Solver.h"
+#include <cuda.h>
 
-class SolverExplicitCPU : public Solver
+class SolverExplicitGPU : public Solver
 {
 private:
     /* data */
+    glm::vec3 *position_gpu, *velocity_gpu, *acceleration_gpu, 
+                *force_gpu;
+    Spring *springs_gpu;
+    float *mass_gpu;
+
+    // float *viscosity_gpu = new float[ length ];
+    // float *deltaT_gpu = new float[ length ];
 public:
-    SolverExplicitCPU(
+    SolverExplicitGPU(
         const glm::vec3 & gravity, 
         const glm::vec3 &wind,
         float viscosity,
@@ -24,5 +31,7 @@ public:
 
     void updateSprings();
     void solve(int tps);
+
+    ~SolverExplicitGPU();
 
 };

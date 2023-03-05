@@ -42,35 +42,21 @@ void SolverExplicitCPU::updateSprings() {
     }
 }
 
-
-void SolverExplicitCPU::updateAcceleration(){
-    for(int i = 0; i < acceleration->size(); i++){
+void SolverExplicitCPU::solve(int Tps) {
+    for(int i = 0; i < velocity->size(); i++)
+    {
         if(mass->at(i) == 0.0f){
             acceleration->at(i) = glm::vec3(0.0f);
         }else{
             acceleration->at(i) = (force->at(i) / mass->at(i)) + gravity + wind;
-        }       
-        //std::cout<<acceleration->at(i).x<<" "<<acceleration->at(i).y<<" "<<acceleration->at(i).z<<std::endl;
-    }
-}
-
-void SolverExplicitCPU::resetForce(){
-    for(int i = 0; i < force->size(); i++){
+        }
         force->at(i) = glm::vec3(0.0f);
-    }
-}
-
-void SolverExplicitCPU::solve(int Tps) {
-    for(int i = 0; i < velocity->size(); i++)
-    {
         velocity->at(i) = velocity->at(i) + deltaT * (acceleration->at(i) - viscosity * velocity->at(i));
         position->at(i) = position->at(i) + deltaT * velocity->at(i);
     }
 }
 
 void SolverExplicitCPU::update(int Tps){
-    resetForce();
     updateSprings();
-    updateAcceleration();
     solve(Tps);
 }

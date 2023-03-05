@@ -11,7 +11,7 @@ TissusObject::TissusObject(const Tissus & t, Solver * solv) : Object(t) {
     else mass.push_back(1);
   }
 
-  springInfo = SpringInfo(30000, 0.01);
+  springInfo = SpringInfo(20000, 0.01);
 
   std::vector<uint> indices = this->m_mesh->getIndices();
   for (int i = 0; i < indices.size(); i+=3)
