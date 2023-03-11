@@ -18,7 +18,6 @@
 class Mesh
 {
 private:
-    std::vector<float> m_vertex;  //!< Tableau des vertices à dessinner
     std::vector<uint>  m_indices; //!< Tableau des indices
     unsigned int m_VBO;           //!< Variable de référence du Vertex Buffer Object
     unsigned int m_EBO;           //!< Variable de référence de l'Element Buffer Object
@@ -31,6 +30,7 @@ private:
     int t = 0;
 
 public:
+    std::vector<float> m_vertex;  //!< Tableau des vertices à dessinner
     Mesh();
     ~Mesh();
 
@@ -63,6 +63,7 @@ public:
     static Mesh * initTissus(int divW, int divH);
 
     Mesh& updateVertex(const std::vector<glm::vec3> & vertices);
+    Mesh& updateBuffer();
 };
 
 

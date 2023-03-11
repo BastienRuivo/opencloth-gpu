@@ -15,12 +15,13 @@ class TissusObject : public Object
   private:
   Solver * solver;
   std::vector<Spring> springs;
-  std::vector<glm::vec3> position;
   std::vector<glm::vec3> velocity;
   std::vector<glm::vec3> acceleration;
   std::vector<glm::vec3> force;
   std::vector<float> mass;
   SpringInfo springInfo;
+  std::vector<Particle> particles;
+  void initParticle(int index, int springIndex, bool isNeg);
 
 };
 

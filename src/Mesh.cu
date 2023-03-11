@@ -98,17 +98,26 @@ glm::vec3 Mesh::getVertex(uint index) const
 Mesh& Mesh::updateVertex(const std::vector<glm::vec3> & vertices)
 {   
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    
     for(int i = 0; i < vertices.size(); i++) {
         m_vertex[i * 8]     = vertices[i].x;
         m_vertex[i * 8 + 1] = vertices[i].y;
         m_vertex[i * 8 + 2] = vertices[i].z;
     }
+    
+    return updateBuffer();
+}
+
+Mesh& Mesh::updateBuffer()
+{
     //Update the mesh in the GPU
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertex.size(), &m_vertex[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     return *this;
 }
+
+
 
 void Mesh::init()
 {

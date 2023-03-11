@@ -16,7 +16,8 @@ public:
     void update(int Tps);
     void setData(
         std::vector<Spring> * spring,
-        std::vector<glm::vec3> * position, 
+        std::vector<float> * vertex, 
+        std::vector<Particle> * particles,
         std::vector<glm::vec3> * velocity, 
         std::vector<glm::vec3> * acceleration,
         std::vector<glm::vec3> * force, 

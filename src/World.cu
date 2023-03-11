@@ -19,18 +19,29 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setIsWireframe(true)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
-    SolverExplicitGPU * solver = new SolverExplicitGPU(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.002);
-    Object * defaultTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 70, 70), solver);
-    defaultTissus->setPosition(glm::vec3(0.f, 0.f, -5.f))
+
+
+    SolverExplicitGPU * solverGPU = new SolverExplicitGPU(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.0001);
+    Object * GPUTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 1000, 1000), solverGPU);
+    GPUTissus->setPosition(glm::vec3(0.f, 0.f, -5.f))
                 .setShaderKey("basic2D")
                 .setFaceCulling(true)
                 .setTextureKeys({"kirbo"});
 
+    addObject(GPUTissus);
 
 
+    // SolverExplicitCPU * solverCPU = new SolverExplicitCPU(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.001);
+    // Object * CPUTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 70, 70), solverCPU);
+    // CPUTissus->setPosition(glm::vec3(3.f, 0.f, -5.f))
+    //             .setShaderKey("basic2D")
+    //             .setFaceCulling(true)
+    //             .setTextureKeys({"sonc"});
+    // addObject(CPUTissus);
+
+    std::cout << "Ajout des objets au monde" << std::endl;
     addObject(defaultCube);
     addObject(defaultPlane);
-    addObject(defaultTissus);
 
 
     std::cout<<"Fin de l'initialisation du monde"<<std::endl;
@@ -46,6 +57,7 @@ void World::render(float ratioScreen)
     m_projection = glm::perspective(glm::radians(70.f), ratioScreen, 0.1f, 1000.f);
 
     m_cam->update();
+
     for(int i = 0; i < m_objects.size(); i++)
     {
         m_objects[i]->render(m_shader, m_textures, m_cam->getView(), m_projection);

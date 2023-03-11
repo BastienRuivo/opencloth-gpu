@@ -5,23 +5,25 @@
 
 #include "Spring.h"
 
-struct ForceToAdd {
-    int A;
-    int B;
-    glm::vec3 force;
+const int MAX_SPRING = 8;
+
+struct Particle {
+    int springs[MAX_SPRING];
+    bool isNegative[MAX_SPRING];
+    int nbSpring = 0;
 };
 
 class Solver
 {
 protected:
     std::vector<Spring> *springs;
-    std::vector<glm::vec3> *position;
+    std::vector<float> *vertex;
     std::vector<glm::vec3> *velocity;
     std::vector<glm::vec3> *acceleration;
     std::vector<glm::vec3> *force;
+    std::vector<glm::vec3> *partialForce;
     std::vector<float> *mass;
-
-    std::vector<ForceToAdd> forcesToAdd;
+    std::vector<Particle> *particles;
     
     glm::vec3 gravity;
     glm::vec3 wind;
@@ -43,7 +45,8 @@ public:
     virtual void update(int Tps) = 0;
     virtual void setData(
         std::vector<Spring> * spring,
-        std::vector<glm::vec3> * position, 
+        std::vector<float> * vertex, 
+        std::vector<Particle> * particles,
         std::vector<glm::vec3> * velocity, 
         std::vector<glm::vec3> * acceleration,
         std::vector<glm::vec3> * force, 
