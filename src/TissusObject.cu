@@ -21,9 +21,8 @@ Particle makeParticle() {
   return p;
 } 
 
-TissusObject::TissusObject(const Tissus & t, Solver * solv) : Object(t) {
+TissusObject::TissusObject(const Tissus & t) : Object(t) {
   
-  solver = solv;
   for(int i = 0; i < this->m_mesh->getVertexCount(); i++) {
     particles.push_back(makeParticle());
     velocity.push_back(glm::vec3(0,0,0));
@@ -66,8 +65,11 @@ TissusObject::TissusObject(const Tissus & t, Solver * solv) : Object(t) {
 
     
   }
-  solver->setData(&springs, &this->m_mesh->m_vertex, &particles, &velocity, &acceleration, &force, &mass);
-  std::cout<<"puted"<<std::endl;
+}
+
+TissusObject& TissusObject::setSolver(Solver * s) {
+  solver = s;
+  return *this;
 }
 
 void TissusObject::update(int Tps)

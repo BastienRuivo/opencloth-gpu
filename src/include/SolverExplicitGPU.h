@@ -2,39 +2,42 @@
 #include "Solver.h"
 #include <cuda.h>
 
-class SolverExplicitGPU : public Solver
+class SolverExplicitGPUData : public SolverData
 {
-private:
-    /* data */
-    glm::vec3 *velocity_gpu, *acceleration_gpu, 
-                *force_gpu, *partialForce_gpu;
-    Spring *springs_gpu;
-    float *mass_gpu, *vertex_gpu;
-
-    Particle *particles_gpu;
-
-    // float *viscosity_gpu = new float[ length ];
-    // float *deltaT_gpu = new float[ length ];
 public:
-    SolverExplicitGPU(
-        const glm::vec3 & gravity, 
-        const glm::vec3 &wind,
-        float viscosity,
-        float deltaT);
+    // CUDA BUFFERS
+    glm::vec3 *velocity, *acceleration, 
+                *force, *partialForce;
+    Spring *springs;
+    float *mass, *vertex;
 
-    void update(int Tps);
-    void setData(
-        std::vector<Spring> * spring,
-        std::vector<float> * vertex, 
-        std::vector<Particle> * particles,
-        std::vector<glm::vec3> * velocity, 
+    Particle *particles;
+
+    int springCount, particleCount; 
+
+    // CPU BUFFERS
+    std::vector<float> *vertex_cpu;
+
+    SolverExplicitGPUData(glm::vec3 gravity, glm::vec3 wind, float viscosity, float deltaT,
+        std::vector<float> * vertex,
+        std::vector<glm::vec3> * velocity,
         std::vector<glm::vec3> * acceleration,
-        std::vector<glm::vec3> * force, 
+        std::vector<glm::vec3> * force,
+        std::vector<Particle> * particles,
+        std::vector<Spring> * spring,
         std::vector<float> * mass);
 
+    ~SolverExplicitGPUData();
+};
+
+class SolverExplicitGPU : public Solver
+{
+private : 
+    SolverExplicitGPUData * _data;
+public:
+    SolverExplicitGPU(SolverExplicitGPUData * data);
+    void update(int Tps);
     void updateSprings();
     void solve(int tps);
-
     ~SolverExplicitGPU();
-
 };

@@ -27,7 +27,6 @@ set(SRCS
     ${LOCAL_DIR}/World.cu
     ${LOCAL_DIR}/SpringInfo.cu
     ${LOCAL_DIR}/Spring.cu
-    ${LOCAL_DIR}/Solver.cu
     ${LOCAL_DIR}/SolverExplicitCPU.cu
     ${LOCAL_DIR}/SolverExplicitGPU.cu
     ${LOCAL_DIR}/TissusObject.cu

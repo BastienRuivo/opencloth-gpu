@@ -8,9 +8,13 @@
 class TissusObject : public Object 
 {
   public:
-  TissusObject(const Tissus & t, Solver *solver);
+  TissusObject(const Tissus & t);
+  TissusObject& setSolver(Solver * solver);
   void update(int Tps);
   void updateMesh();
+
+  
+
 
   private:
   Solver * solver;
@@ -22,6 +26,33 @@ class TissusObject : public Object
   SpringInfo springInfo;
   std::vector<Particle> particles;
   void initParticle(int index, int springIndex, bool isNeg);
+
+  public:
+  std::vector<float>* getVertex(){
+    return &this->m_mesh->m_vertex;
+  }
+  std::vector<Spring>* getSprings(){
+    return &this->springs;
+  }
+  std::vector<Particle>* getParticles(){
+    return &this->particles;
+  }
+  std::vector<glm::vec3>* getVelocity(){
+    return &this->velocity;
+  }
+  std::vector<glm::vec3>* getAcceleration(){
+    return &this->acceleration;
+  }
+  std::vector<glm::vec3>* getForce(){
+    return &this->force;
+  }
+  std::vector<float>* getMass(){
+    return &this->mass;
+  }
+  SpringInfo* getSpringInfo(){
+    return &this->springInfo;
+  }
+
 
 };
 

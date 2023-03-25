@@ -5,8 +5,7 @@
 // ====================================
 // kernel declaration
 // ====================================
-__global__
-void solveGPU(float * vertex,
+__global__ void solveGPU(float * vertex,
                 Particle *particle,
                 glm::vec3 *velocity,
                 glm::vec3 *acceleration,
@@ -63,80 +62,74 @@ __global__ void updateSpringsGPU(float * vertex, glm::vec3 * velocity, Spring * 
     }
 }
 
-SolverExplicitGPU::SolverExplicitGPU(
-        const glm::vec3 & gravity, 
-        const glm::vec3 &wind,
-        float viscosity,
-        float deltaT): Solver(gravity, wind, viscosity, deltaT) {
-            
-    
-}
 
+// ====================================
+// CPU functions
+// ====================================
 
-void SolverExplicitGPU::setData(
-        std::vector<Spring> * spring,
-        std::vector<float> * vertex, 
-        std::vector<Particle> * particles,
-        std::vector<glm::vec3> * velocity, 
+SolverExplicitGPUData::SolverExplicitGPUData(glm::vec3 gravity, glm::vec3 wind, float viscosity, float deltaT,
+        std::vector<float> * vertex,
+        std::vector<glm::vec3> * velocity,
         std::vector<glm::vec3> * acceleration,
-        std::vector<glm::vec3> * force, 
-        std::vector<float> * mass) {
-    
-    this->springs = spring;
-    this->vertex = vertex;
-    this->particles = particles;
-    this->velocity = velocity;
-    this->acceleration = acceleration;
-    this->force = force;
-    this->mass = mass;
+        std::vector<glm::vec3> * force,
+        std::vector<Particle> * particles,
+        std::vector<Spring> * spring,
+        std::vector<float> * mass) : SolverData(gravity, wind, viscosity, deltaT) {
+    this->particleCount = particles->size();
+    this->springCount = spring->size();
 
-    
-    
-    this->partialForce = new std::vector<glm::vec3>(spring->size());
+    this->vertex_cpu = vertex;
 
-
-    int length = particles->size();
-
-    cudaMalloc( (void**) &this->vertex_gpu, length * sizeof(float) * 8 );
-    cudaMalloc( (void**) &this->velocity_gpu, length * sizeof(glm::vec3) );
-    cudaMalloc( (void**) &this->partialForce_gpu, length * sizeof(glm::vec3) );
-    cudaMalloc( (void**) &this->acceleration_gpu, length * sizeof(glm::vec3) );
-    cudaMalloc( (void**) &this->force_gpu, length * sizeof(glm::vec3) );
-    cudaMalloc( (void**) &this->mass_gpu, length * sizeof(float));
-    cudaMalloc( (void**) &this->springs_gpu, spring->size() * sizeof(Spring) );
-    cudaMalloc( (void**) &this->partialForce_gpu, spring->size() * sizeof(glm::vec3));
-    cudaMalloc( (void**) &this->particles_gpu, length * sizeof(Particle));
+    cudaMalloc( (void**) &this->vertex, this->particleCount * sizeof(float) * 8 );
+    cudaMalloc( (void**) &this->velocity, this->particleCount * sizeof(glm::vec3) );
+    cudaMalloc( (void**) &this->partialForce, this->particleCount * sizeof(glm::vec3) );
+    cudaMalloc( (void**) &this->acceleration, this->particleCount * sizeof(glm::vec3) );
+    cudaMalloc( (void**) &this->force, this->particleCount * sizeof(glm::vec3) );
+    cudaMalloc( (void**) &this->mass, this->particleCount * sizeof(float));
+    cudaMalloc( (void**) &this->springs, this->springCount * sizeof(Spring) );
+    cudaMalloc( (void**) &this->partialForce, this->springCount * sizeof(glm::vec3));
+    cudaMalloc( (void**) &this->particles, this->particleCount * sizeof(Particle));
 
 
-    cudaMemcpy(mass_gpu, &(*mass)[0], length * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(velocity_gpu, &(*velocity)[0], length * sizeof(glm::vec3), cudaMemcpyHostToDevice);
-    cudaMemcpy(vertex_gpu, &(*vertex)[0], length * sizeof(float) * 8, cudaMemcpyHostToDevice);
-    cudaMemcpy(force_gpu, &(*force)[0], length * sizeof(glm::vec3), cudaMemcpyHostToDevice);
-    cudaMemcpy(acceleration_gpu, &(*acceleration)[0], length * sizeof(glm::vec3), cudaMemcpyHostToDevice);
-    cudaMemcpy(springs_gpu, &(*springs)[0], spring->size() * sizeof(Spring), cudaMemcpyHostToDevice);
-    cudaMemcpy(particles_gpu, &(*particles)[0], length * sizeof(Particle), cudaMemcpyHostToDevice);
+    cudaMemcpy(this->mass,          &(*mass)[0],            this->particleCount * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(this->velocity,      &(*velocity)[0],        this->particleCount * sizeof(glm::vec3), cudaMemcpyHostToDevice);
+    cudaMemcpy(this->vertex,        &(*vertex)[0],          this->particleCount * sizeof(float) * 8, cudaMemcpyHostToDevice);
+    cudaMemcpy(this->force,         &(*force)[0],           this->particleCount * sizeof(glm::vec3), cudaMemcpyHostToDevice);
+    cudaMemcpy(this->acceleration,  &(*acceleration)[0],    this->particleCount * sizeof(glm::vec3), cudaMemcpyHostToDevice);
+    cudaMemcpy(this->springs,       &(*spring)[0],          this->springCount * sizeof(Spring), cudaMemcpyHostToDevice);
+    cudaMemcpy(this->particles,     &(*particles)[0],       this->particleCount * sizeof(Particle), cudaMemcpyHostToDevice);
 }
 
+SolverExplicitGPUData::~SolverExplicitGPUData() {
+    cudaFree(vertex);
+    cudaFree(velocity);
+    cudaFree(acceleration);
+    cudaFree(force);
+    cudaFree(mass);
+    cudaFree(springs);
+    cudaFree(particles);
+    cudaFree(partialForce);
+}
+
+SolverExplicitGPU::SolverExplicitGPU(SolverExplicitGPUData * data) : _data(data) {}
 
 void SolverExplicitGPU::solve(int tps) {
-    int length = particles->size();
-    
-    
     int blockSize = 1024;
-    int gridSize = (int)ceil((float)length/blockSize);
+    int gridSize = (int)ceil((float)_data->particleCount/blockSize);
 
-    solveGPU<<<gridSize, blockSize>>>(vertex_gpu, particles_gpu, velocity_gpu, 
-                            acceleration_gpu, force_gpu, partialForce_gpu, mass_gpu, gravity, wind, viscosity, deltaT, length);
+    solveGPU<<<gridSize, blockSize>>>(_data->vertex, _data->particles, _data->velocity, 
+        _data->acceleration, _data->force, _data->partialForce, 
+        _data->mass, _data->gravity, _data->wind, 
+        _data->viscosity, _data->deltaT, _data->particleCount);
 
-    //cudaMemcpy(&(*vertex)[0], vertex_gpu, length * 8 * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(&(*_data->vertex_cpu)[0], _data->vertex, _data->particleCount * 8 * sizeof(float), cudaMemcpyDeviceToHost);
 }
 
 void SolverExplicitGPU::updateSprings() {
-    int length = springs->size();
     int blockSize = 1024;
-    int gridSize = (int)ceil((float)length/blockSize);
+    int gridSize = (int)ceil((float)_data->springCount/blockSize);
 
-    updateSpringsGPU<<<gridSize, blockSize>>>(vertex_gpu, velocity_gpu, springs_gpu, partialForce_gpu, length);
+    updateSpringsGPU<<<gridSize, blockSize>>>(_data->vertex, _data->velocity, _data->springs, _data->partialForce, _data->springCount);
 }
 
 
@@ -147,12 +140,5 @@ void SolverExplicitGPU::update(int Tps){
 }
 
 SolverExplicitGPU::~SolverExplicitGPU() {
-    cudaFree(vertex_gpu);
-    cudaFree(velocity_gpu);
-    cudaFree(acceleration_gpu);
-    cudaFree(force_gpu);
-    cudaFree(mass_gpu);
-    cudaFree(springs_gpu);
-    cudaFree(particles_gpu);
-    cudaFree(partialForce_gpu);
+    delete _data;
 }

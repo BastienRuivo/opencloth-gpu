@@ -8,7 +8,8 @@
                 "${workspaceFolder}/src/include",
                 "/usr/lib",
                 "/lib",
-                "${workspaceFolder}/src/include"
+                "${workspaceFolder}/src/include",
+                "/opt/cuda/targets/x86_64-linux/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

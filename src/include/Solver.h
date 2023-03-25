@@ -13,44 +13,36 @@ struct Particle {
     int nbSpring = 0;
 };
 
+class SolverData
+{
+    public :
+    glm::vec3 gravity;
+    glm::vec3 wind;
+    float viscosity;
+    float deltaT;
+
+    SolverData(glm::vec3 gravity, glm::vec3 wind, float viscosity, float deltaT) {
+        this->gravity = gravity;
+        this->wind = wind;
+        this->viscosity = viscosity;
+        this->deltaT = deltaT;
+    }
+
+    ~SolverData() {}
+};
+
 class Solver
 {
 protected:
-    std::vector<Spring> *springs;
-    std::vector<float> *vertex;
-    std::vector<glm::vec3> *velocity;
-    std::vector<glm::vec3> *acceleration;
-    std::vector<glm::vec3> *force;
-    std::vector<glm::vec3> *partialForce;
-    std::vector<float> *mass;
-    std::vector<Particle> *particles;
-    
-    glm::vec3 gravity;
-    glm::vec3 wind;
-
-    float viscosity;
-
-    float timeStep;
-    float deltaT;
-
     virtual void updateSprings() = 0;
     virtual void solve(int tps) = 0;
+    ~Solver() {};
 
 public:
-    Solver(
-        const glm::vec3 & gravity, 
-        const glm::vec3 &wind,
-        float viscosity,
-        float deltaT);
     virtual void update(int Tps) = 0;
-    virtual void setData(
-        std::vector<Spring> * spring,
-        std::vector<float> * vertex, 
-        std::vector<Particle> * particles,
-        std::vector<glm::vec3> * velocity, 
-        std::vector<glm::vec3> * acceleration,
-        std::vector<glm::vec3> * force, 
-        std::vector<float> * mass) = 0;
+    void printVec(glm::vec3 vec){
+        std::cout<<"{ x : " << vec.x<<", y : "<<vec.y<<", z: "<<vec.z<<"}"<<std::endl;
+    }
 };
 
 #endif

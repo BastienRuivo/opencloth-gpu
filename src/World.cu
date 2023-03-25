@@ -1,5 +1,6 @@
 #include "World.h"
 #include <GLFW/glfw3.h>
+#include "SolverBuilder.h"
 World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
 {
     Tps = 0;
@@ -20,10 +21,20 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
 
+    TissusObject * GPUTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 70, 70));
+    
+    SolverExplicitGPUData * solverGPUData = new SolverExplicitGPUData(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.002,
+        GPUTissus->getVertex(),
+        GPUTissus->getVelocity(),
+        GPUTissus->getAcceleration(),
+        GPUTissus->getForce(),
+        GPUTissus->getParticles(),
+        GPUTissus->getSprings(),
+        GPUTissus->getMass()
+    );
 
-    SolverExplicitGPU * solverGPU = new SolverExplicitGPU(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.0001);
-    Object * GPUTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 1000, 1000), solverGPU);
-    GPUTissus->setPosition(glm::vec3(0.f, 0.f, -5.f))
+    GPUTissus->setSolver(SolverBuilder::create(solverGPUData))
+                .setPosition(glm::vec3(0.f, 0.f, -5.f))
                 .setShaderKey("basic2D")
                 .setFaceCulling(true)
                 .setTextureKeys({"kirbo"});
