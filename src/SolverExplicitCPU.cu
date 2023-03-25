@@ -63,7 +63,7 @@ void SolverExplicitCPU::solve(int Tps) {
         }
         _data->force->at(i) = glm::vec3(0.0f);
         _data->velocity->at(i) = _data->velocity->at(i) + _data->deltaT * (_data->acceleration->at(i) - _data->viscosity * _data->velocity->at(i));
-        _data->vertex->at(i) = _data->vertex->at(i * 8) + _data->deltaT * _data->velocity->at(i).x;
+        _data->vertex->at(i * 8) = _data->vertex->at(i * 8) + _data->deltaT * _data->velocity->at(i).x;
         _data->vertex->at(i * 8 + 1) = _data->vertex->at(i * 8 + 1) + _data->deltaT * _data->velocity->at(i).y;
         _data->vertex->at(i * 8 + 2) = _data->vertex->at(i * 8 + 2) + _data->deltaT * _data->velocity->at(i).z;
     }

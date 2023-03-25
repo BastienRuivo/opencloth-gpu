@@ -22,8 +22,7 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setFaceCulling(true);
 
     TissusObject * GPUTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 70, 70));
-    
-    SolverExplicitGPUData * solverGPUData = new SolverExplicitGPUData(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.002,
+    SolverExplicitCPUData * solverGPUData = new SolverExplicitCPUData(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.002,
         GPUTissus->getVertex(),
         GPUTissus->getVelocity(),
         GPUTissus->getAcceleration(),
