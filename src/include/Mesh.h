@@ -38,6 +38,7 @@ public:
      * @return uint représentant le VAO
     */
     uint getVAO() const;
+    uint getVBO() const;
     uint getVertexCount() const;
     uint getIndicesCount() const;
 

@@ -129,6 +129,11 @@ void Mesh::init()
     glEnable(GL_DEPTH_TEST);
 }
 
+uint Mesh::getVBO() const
+{
+    return m_VBO;
+}
+
 Mesh * Mesh::initCube()
 {
     std::cout<<"Cube..."<<std::endl;

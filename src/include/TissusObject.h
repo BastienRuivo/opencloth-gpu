@@ -53,6 +53,8 @@ class TissusObject : public Object
     return &this->springInfo;
   }
 
+  uint getVBO() const;
+
 
 };
 

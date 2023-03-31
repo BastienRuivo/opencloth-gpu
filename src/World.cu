@@ -21,33 +21,43 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
 
-    TissusObject * GPUTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 70, 70));
-    SolverExplicitCPUData * solverGPUData = new SolverExplicitCPUData(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.002,
-        GPUTissus->getVertex(),
-        GPUTissus->getVelocity(),
-        GPUTissus->getAcceleration(),
-        GPUTissus->getForce(),
-        GPUTissus->getParticles(),
-        GPUTissus->getSprings(),
-        GPUTissus->getMass()
+    TissusObject * GPUCloth = new TissusObject(Tissus(750, glm::vec3(0.f, 5.f, 0.f), 200, 200));
+    SolverExplicitGPUData * solverGPUData = new SolverExplicitGPUData(glm::vec3(0, -9.8, 0), glm::vec3(2, 0, 0), 0.995, 0.0005,
+        GPUCloth->getVBO(),
+        GPUCloth->getVelocity(),
+        GPUCloth->getAcceleration(),
+        GPUCloth->getForce(),
+        GPUCloth->getParticles(),
+        GPUCloth->getSprings(),
+        GPUCloth->getMass()
     );
 
-    GPUTissus->setSolver(SolverBuilder::create(solverGPUData))
+    GPUCloth->setSolver(SolverBuilder::create(solverGPUData))
                 .setPosition(glm::vec3(0.f, 0.f, -5.f))
                 .setShaderKey("basic2D")
                 .setFaceCulling(true)
                 .setTextureKeys({"kirbo"});
 
-    addObject(GPUTissus);
+    addObject(GPUCloth);
 
+    // TissusObject * CPUCloth = new TissusObject(Tissus(1250, glm::vec3(0.f, 5.f, 0.f), 400, 400));
+    // SolverExplicitCPUData * solverCPUData = new SolverExplicitCPUData(glm::vec3(0, -9.8, 0), glm::vec3(2, 0, 0), 0.995, 0.0005,
+    //     CPUCloth->getVertex(),
+    //     CPUCloth->getVelocity(),
+    //     CPUCloth->getAcceleration(),
+    //     CPUCloth->getForce(),
+    //     CPUCloth->getParticles(),
+    //     CPUCloth->getSprings(),
+    //     CPUCloth->getMass()
+    // );
 
-    // SolverExplicitCPU * solverCPU = new SolverExplicitCPU(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.001);
-    // Object * CPUTissus = new TissusObject(Tissus(1000, glm::vec3(0.f, 5.f, 0.f), 70, 70), solverCPU);
-    // CPUTissus->setPosition(glm::vec3(3.f, 0.f, -5.f))
+    // CPUCloth->setSolver(SolverBuilder::create(solverCPUData))
+    //             .setPosition(glm::vec3(0.f, 0.f, -5.f))
     //             .setShaderKey("basic2D")
     //             .setFaceCulling(true)
-    //             .setTextureKeys({"sonc"});
-    // addObject(CPUTissus);
+    //             .setTextureKeys({"kirbo"});
+
+    // addObject(CPUCloth);
 
     std::cout << "Ajout des objets au monde" << std::endl;
     addObject(defaultCube);
@@ -76,7 +86,10 @@ void World::render(float ratioScreen)
 
 void World::update(float time)
 {
-    m_time = glfwGetTime();
+    auto current_time = glfwGetTime();
+    auto delta_time = current_time - m_time;
+    m_time = current_time;
+    std::cout<<"FPS : "<<1.f/delta_time<<std::endl;
 
   
   for(const auto & o : m_objects)

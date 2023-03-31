@@ -21,7 +21,7 @@ SolverExplicitCPUData::SolverExplicitCPUData(glm::vec3 gravity, glm::vec3 wind, 
 }
 
 SolverExplicitCPU::SolverExplicitCPU(SolverExplicitCPUData * data) : _data(data) {
-    _data = data;
+    type = SolverType::SOLVER_CPU;
 }
 
 void SolverExplicitCPU::updateSprings() {
@@ -31,16 +31,16 @@ void SolverExplicitCPU::updateSprings() {
         int B = _data->springs->at(i).PB;
 
         glm::vec3 dPos;
-        dPos.x = _data->vertex->at(A * 8) - _data->vertex->at(B * 8);
-        dPos.y = _data->vertex->at(A * 8 + 1) - _data->vertex->at(B * 8 + 1);
-        dPos.z = _data->vertex->at(A * 8 + 2) - _data->vertex->at(B * 8 + 2);
-
+        int idA = A * 8;
+        int idB = B * 8;
+        dPos.x = _data->vertex->at(idA) - _data->vertex->at(idB);
+        dPos.y = _data->vertex->at(idA + 1) - _data->vertex->at(idB + 1);
+        dPos.z = _data->vertex->at(idA + 2) - _data->vertex->at(idB + 2);
         glm::vec3 dVit = _data->velocity->at(A) - _data->velocity->at(B);
         glm::vec3 dPosNorm = glm::normalize(dPos);
 
         float diffLength = glm::length(dPos) - _data->springs->at(i).restLength;
-
-        _data->partialForce->at(i) = (_data->springs->at(i).stiffness * diffLength * dPosNorm) + (_data->springs->at(i).damping * dPosNorm * glm::dot(dVit, dPosNorm));
+        _data->partialForce->at(i) = (_data->springs->at(i).stiffness * diffLength * dPosNorm) + (_data->springs->at(i).damping * dPos * glm::dot(dVit, dPos));
     }
 }
 

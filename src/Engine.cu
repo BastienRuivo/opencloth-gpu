@@ -89,6 +89,7 @@ int Engine::initGLAD()
     std::cout<<"GLAD Initialise"<<std::endl;
     return 0;
 }
+const uint inputPrevent = 1500;
 void Engine::keyboardHandler(Camera * Cam)
 {
     float deltaTime = glfwGetTime() - m_lastTime;
@@ -99,7 +100,7 @@ void Engine::keyboardHandler(Camera * Cam)
         if(glfwGetKey(m_engineWindow->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {
             glfwSetWindowShouldClose(m_engineWindow->getWindow(), true);
-            m_inputPrevent = 10;
+            m_inputPrevent = inputPrevent;
         }
 
         if(glfwGetKey(m_engineWindow->getWindow(), GLFW_KEY_P) == GLFW_PRESS)
@@ -107,19 +108,19 @@ void Engine::keyboardHandler(Camera * Cam)
             m_isWireframe = !m_isWireframe;
             if(m_isWireframe)glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            m_inputPrevent = 10;
+            m_inputPrevent = inputPrevent;
         }
 
         if(glfwGetKey(m_engineWindow->getWindow(), GLFW_KEY_U) == GLFW_PRESS)
         {
             m_isUIDisplayed = !m_isUIDisplayed;
-            m_inputPrevent = 10;
+            m_inputPrevent = inputPrevent;
         }
 
          if(glfwGetKey(m_engineWindow->getWindow(), GLFW_KEY_Y) == GLFW_PRESS)
         {
             m_isPaused = !m_isPaused;
-            m_inputPrevent = 10;
+            m_inputPrevent = inputPrevent;
             std::cout<<"Pause = " << m_isPaused<<std::endl;
         }
 
@@ -184,7 +185,7 @@ Shader* Engine::getShader()
 
 void Engine::run()
 {
-    
+    glfwSwapInterval(0);
     glfwSetInputMode(m_engineWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     float time = 0;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);

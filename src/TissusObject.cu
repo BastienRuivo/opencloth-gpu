@@ -80,5 +80,19 @@ void TissusObject::update(int Tps)
 
 void TissusObject::updateMesh()
 {
-  this->m_mesh->updateBuffer();
+  //this->m_mesh->updateBuffer();
+  switch (this->solver->getType())
+  {
+  case SolverType::SOLVER_CPU:
+    this->m_mesh->updateBuffer();
+    break;
+  
+  default:
+    break;
+  }
+}
+
+uint TissusObject::getVBO() const
+{
+  return m_mesh->getVBO();
 }

@@ -34,11 +34,10 @@ __global__ void solveGPU(float * vertex,
             acceleration[gtid] = (force[gtid] / mass[gtid]) + gravity + wind;
         }
         velocity[gtid] = velocity[gtid] + deltaT * (acceleration[gtid] - viscosity * velocity[gtid]);
-
         vertex[gtid * 8] = vertex[gtid * 8] + deltaT * velocity[gtid].x;
         vertex[gtid * 8 + 1] = vertex[gtid * 8 + 1] + deltaT * velocity[gtid].y;
         vertex[gtid * 8 + 2] = vertex[gtid * 8 + 2] + deltaT * velocity[gtid].z;
-
+        //printf("vertex[%d] = %f, %f, %f\n", gtid, vertex[gtid * 8], vertex[gtid * 8 + 1], vertex[gtid * 8 + 2]);
         force[gtid] = glm::vec3(0.0f);
     }
 }
@@ -68,7 +67,7 @@ __global__ void updateSpringsGPU(float * vertex, glm::vec3 * velocity, Spring * 
 // ====================================
 
 SolverExplicitGPUData::SolverExplicitGPUData(glm::vec3 gravity, glm::vec3 wind, float viscosity, float deltaT,
-        std::vector<float> * vertex,
+        uint VBO,
         std::vector<glm::vec3> * velocity,
         std::vector<glm::vec3> * acceleration,
         std::vector<glm::vec3> * force,
@@ -78,7 +77,9 @@ SolverExplicitGPUData::SolverExplicitGPUData(glm::vec3 gravity, glm::vec3 wind, 
     this->particleCount = particles->size();
     this->springCount = spring->size();
 
-    this->vertex_cpu = vertex;
+    this->VBO = VBO;
+    cudaGraphicsGLRegisterBuffer(&this->cudaVboResource, this->VBO, cudaGraphicsMapFlagsNone);
+    
 
     cudaMalloc( (void**) &this->vertex, this->particleCount * sizeof(float) * 8 );
     cudaMalloc( (void**) &this->velocity, this->particleCount * sizeof(glm::vec3) );
@@ -93,15 +94,23 @@ SolverExplicitGPUData::SolverExplicitGPUData(glm::vec3 gravity, glm::vec3 wind, 
 
     cudaMemcpy(this->mass,          &(*mass)[0],            this->particleCount * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(this->velocity,      &(*velocity)[0],        this->particleCount * sizeof(glm::vec3), cudaMemcpyHostToDevice);
-    cudaMemcpy(this->vertex,        &(*vertex)[0],          this->particleCount * sizeof(float) * 8, cudaMemcpyHostToDevice);
     cudaMemcpy(this->force,         &(*force)[0],           this->particleCount * sizeof(glm::vec3), cudaMemcpyHostToDevice);
     cudaMemcpy(this->acceleration,  &(*acceleration)[0],    this->particleCount * sizeof(glm::vec3), cudaMemcpyHostToDevice);
     cudaMemcpy(this->springs,       &(*spring)[0],          this->springCount * sizeof(Spring), cudaMemcpyHostToDevice);
     cudaMemcpy(this->particles,     &(*particles)[0],       this->particleCount * sizeof(Particle), cudaMemcpyHostToDevice);
+    cudaGraphicsMapResources(1, &cudaVboResource, 0);
+}
+
+void printCudaLog() {
+    cudaError_t error = cudaGetLastError();
+    if (error != cudaSuccess) {
+        printf("CUDA error: %s\n", cudaGetErrorString(error));
+    }
 }
 
 SolverExplicitGPUData::~SolverExplicitGPUData() {
-    cudaFree(vertex);
+    cudaGraphicsUnmapResources(1, &cudaVboResource, 0);
+    cudaGraphicsUnregisterResource(cudaVboResource);
     cudaFree(velocity);
     cudaFree(acceleration);
     cudaFree(force);
@@ -111,32 +120,40 @@ SolverExplicitGPUData::~SolverExplicitGPUData() {
     cudaFree(partialForce);
 }
 
-SolverExplicitGPU::SolverExplicitGPU(SolverExplicitGPUData * data) : _data(data) {}
+SolverExplicitGPU::SolverExplicitGPU(SolverExplicitGPUData * data) : _data(data) {
+    type = SolverType::SOLVER_GPU;
+}
 
 void SolverExplicitGPU::solve(int tps) {
     int blockSize = 1024;
     int gridSize = (int)ceil((float)_data->particleCount/blockSize);
+    
+    
 
     solveGPU<<<gridSize, blockSize>>>(_data->vertex, _data->particles, _data->velocity, 
         _data->acceleration, _data->force, _data->partialForce, 
         _data->mass, _data->gravity, _data->wind, 
         _data->viscosity, _data->deltaT, _data->particleCount);
-
-    cudaMemcpy(&(*_data->vertex_cpu)[0], _data->vertex, _data->particleCount * 8 * sizeof(float), cudaMemcpyDeviceToHost);
 }
 
 void SolverExplicitGPU::updateSprings() {
     int blockSize = 1024;
     int gridSize = (int)ceil((float)_data->springCount/blockSize);
-
     updateSpringsGPU<<<gridSize, blockSize>>>(_data->vertex, _data->velocity, _data->springs, _data->partialForce, _data->springCount);
 }
 
 
 
 void SolverExplicitGPU::update(int Tps){
+    cudaStream_t stream;
+    
+    cudaGraphicsResourceGetMappedPointer((void**)&(_data->vertex), &(_data->vertexSize), (_data->cudaVboResource));
     updateSprings();
     solve(Tps);
+    //cudaDeviceSynchronize();
+    //cudaStreamSynchronize(stream);
+    
+
 }
 
 SolverExplicitGPU::~SolverExplicitGPU() {

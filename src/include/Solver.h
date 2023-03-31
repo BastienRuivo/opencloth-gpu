@@ -7,6 +7,11 @@
 
 const int MAX_SPRING = 8;
 
+enum SolverType {
+    SOLVER_CPU,
+    SOLVER_GPU
+};
+
 struct Particle {
     int springs[MAX_SPRING];
     bool isNegative[MAX_SPRING];
@@ -34,6 +39,7 @@ class SolverData
 class Solver
 {
 protected:
+    SolverType type;
     virtual void updateSprings() = 0;
     virtual void solve(int tps) = 0;
     ~Solver() {};
@@ -43,6 +49,7 @@ public:
     void printVec(glm::vec3 vec){
         std::cout<<"{ x : " << vec.x<<", y : "<<vec.y<<", z: "<<vec.z<<"}"<<std::endl;
     }
+    SolverType getType() const { return type; }
 };
 
 #endif
