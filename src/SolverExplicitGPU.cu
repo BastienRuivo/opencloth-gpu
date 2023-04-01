@@ -21,12 +21,7 @@ __global__ void solveGPU(float * vertex,
     int gtid = blockIdx.x*blockDim.x+threadIdx.x;
     if (gtid < size) {
         for(int i = 0; i < particle[gtid].nbSpring; i++) {
-            if(particle[gtid].springs[i] != -1) {
-                if(particle[gtid].isNegative[i])
-                    force[gtid] = force[gtid] - partialForce[particle[gtid].springs[i]];
-                else
-                    force[gtid] = force[gtid] + partialForce[particle[gtid].springs[i]];
-            }
+            force[gtid] = force[gtid] + partialForce[particle[gtid].springs[i]] * particle[gtid].multiplier[i];
         }
         if(mass[gtid] == 0.0f){
             acceleration[gtid] = glm::vec3(0.0f);
@@ -37,7 +32,6 @@ __global__ void solveGPU(float * vertex,
         vertex[gtid * 8] = vertex[gtid * 8] + deltaT * velocity[gtid].x;
         vertex[gtid * 8 + 1] = vertex[gtid * 8 + 1] + deltaT * velocity[gtid].y;
         vertex[gtid * 8 + 2] = vertex[gtid * 8 + 2] + deltaT * velocity[gtid].z;
-        //printf("vertex[%d] = %f, %f, %f\n", gtid, vertex[gtid * 8], vertex[gtid * 8 + 1], vertex[gtid * 8 + 2]);
         force[gtid] = glm::vec3(0.0f);
     }
 }
@@ -151,7 +145,7 @@ void SolverExplicitGPU::update(int Tps){
     updateSprings();
     solve(Tps);
     //cudaDeviceSynchronize();
-    //cudaStreamSynchronize(stream);
+    cudaStreamSynchronize(stream);
     
 
 }

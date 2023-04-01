@@ -13,8 +13,8 @@ enum SolverType {
 };
 
 struct Particle {
-    int springs[MAX_SPRING];
-    bool isNegative[MAX_SPRING];
+    uint springs[MAX_SPRING];
+    float multiplier[MAX_SPRING];
     int nbSpring = 0;
 };
 

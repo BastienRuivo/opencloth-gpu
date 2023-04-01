@@ -1,23 +1,14 @@
 #include "TissusObject.h"
 
 void TissusObject::initParticle(int index, int springIndex, bool isNeg) {
-  for(int j = 0; j < MAX_SPRING; j++) {
-      if(particles[index].springs[j] == -1) {
-        particles[index].springs[j] = springIndex;
-        particles[index].isNegative[j] = isNeg;
-        particles[index].nbSpring++;
-        break;
-      }
-  }
+  particles[index].springs[particles[index].nbSpring] = springIndex;
+  particles[index].multiplier[particles[index].nbSpring] = isNeg ? -1.f : 1.f;
+  particles[index].nbSpring++;
 }
 
 Particle makeParticle() {
   Particle p;
   p.nbSpring = 0;
-  for(int i = 0; i < MAX_SPRING; i++) {
-    p.springs[i] = -1;
-    p.isNegative[i] = false;
-  }
   return p;
 } 
 
@@ -34,7 +25,7 @@ TissusObject::TissusObject(const Tissus & t) : Object(t) {
 
   
 
-  springInfo = SpringInfo(10000, 0.01);
+  springInfo = SpringInfo(20000, 0.01);
   springInfo.updateDampingFactor();
 
   float stiffness = springInfo.GetStiffness();

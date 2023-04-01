@@ -50,11 +50,7 @@ void SolverExplicitCPU::solve(int Tps) {
     {
         for(int j = 0; j < _data->particles->at(i).nbSpring; j++){
             int springIndex = _data->particles->at(i).springs[j];
-            if(_data->particles->at(i).isNegative[j]) {
-                _data->force->at(i) -= _data->partialForce->at(springIndex);
-            } else {
-                _data->force->at(i) += _data->partialForce->at(springIndex);
-            }
+            _data->force->at(i) += _data->partialForce->at(springIndex) * _data->particles->at(i).multiplier[j];
         }
         if(_data->mass->at(i) == 0.0f){
             _data->acceleration->at(i) = glm::vec3(0.0f);

@@ -98,7 +98,7 @@ glm::vec3 Mesh::getVertex(uint index) const
 Mesh& Mesh::updateVertex(const std::vector<glm::vec3> & vertices)
 {   
 
-    
+    #pragma omp parallel for
     for(int i = 0; i < vertices.size(); i++) {
         m_vertex[i * 8]     = vertices[i].x;
         m_vertex[i * 8 + 1] = vertices[i].y;
@@ -323,6 +323,7 @@ Mesh * Mesh::initTissus(int divW, int divH) {
                 verticesOrder.push_back(i * divH + j);
                 verticesOrder.push_back(i * divH + j + 1);
                 verticesOrder.push_back((i + 1) * divH + j);
+                
                 verticesOrder.push_back((i + 1) * divH + j);
                 verticesOrder.push_back(i * divH + j + 1);
                 verticesOrder.push_back((i + 1) * divH + j + 1);
