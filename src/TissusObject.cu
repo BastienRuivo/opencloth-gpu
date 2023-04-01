@@ -42,7 +42,7 @@ TissusObject::TissusObject(const Tissus & t) : Object(t) {
   float DF = springInfo.GetDampingFactor();
 
   std::vector<uint> indices = this->m_mesh->getIndices();
-  for (unsigned int i = 0; i < indices.size(); i+=3)
+  for (unsigned int i = 0; i < indices.size(); i+=6)
   {
     float L0 = glm::length(this->m_mesh->getVertex(indices[i]) - this->m_mesh->getVertex(indices[i+1]));
     Spring s = {i, indices[i], indices[i+1], L0, stiffness, damping, DF};
@@ -50,21 +50,38 @@ TissusObject::TissusObject(const Tissus & t) : Object(t) {
 
     initParticle(indices[i], springs.size()-1, true);
     initParticle(indices[i+1], springs.size()-1, false);
-    
 
-    L0 = glm::length(this->m_mesh->getVertex(indices[i+1]) - this->m_mesh->getVertex(indices[i+2]));
-    s = {i+1, indices[i+1], indices[i+2], L0, stiffness, damping, DF};
+    L0 = glm::length(this->m_mesh->getVertex(indices[i]) - this->m_mesh->getVertex(indices[i+2]));
+    s = {i+1, indices[i], indices[i+2], L0, stiffness, damping, DF};
     springs.push_back(s);
 
-    initParticle(indices[i+1], springs.size()-1, true);
+    initParticle(indices[i], springs.size()-1, true);
     initParticle(indices[i+2], springs.size()-1, false);
 
-    L0 = glm::length(this->m_mesh->getVertex(indices[i+2]) - this->m_mesh->getVertex(indices[i]));
-    s = {i+2, indices[i+2], indices[i], L0, stiffness, damping, DF};
+    L0 = glm::length(this->m_mesh->getVertex(indices[i+5]) - this->m_mesh->getVertex(indices[i+3]));
+    s = {i+2, indices[i+5], indices[i+3], L0, stiffness, damping, DF};
     springs.push_back(s);
 
+    initParticle(indices[i+5], springs.size()-1, true);
+    initParticle(indices[i+3], springs.size()-1, false);
+
+    L0 = glm::length(this->m_mesh->getVertex(indices[i+5]) - this->m_mesh->getVertex(indices[i+4]));
+    s = {i+3, indices[i+5], indices[i+4], L0, stiffness, damping, DF};
+    springs.push_back(s);
+
+    initParticle(indices[i+5], springs.size()-1, true);
+    initParticle(indices[i+4], springs.size()-1, false);
     
   }
+
+  // for(int i = 0; i < this->m_mesh->getVertexCount(); i++) {
+  //   std::cout<<"[";
+  //   for(int j = 0; j < particles[i].nbSpring; j++) {
+  //     std::cout<<particles[i].isNegative[j];
+  //     if(j != particles[i].nbSpring-1) std::cout<<",";
+  //   }
+  //   std::cout<<"]"<<std::endl;
+  // }
 }
 
 TissusObject& TissusObject::setSolver(Solver * s) {

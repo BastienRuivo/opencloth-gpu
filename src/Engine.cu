@@ -89,7 +89,7 @@ int Engine::initGLAD()
     std::cout<<"GLAD Initialise"<<std::endl;
     return 0;
 }
-const uint inputPrevent = 1500;
+const uint inputPrevent = 1000;
 void Engine::keyboardHandler(Camera * Cam)
 {
     float deltaTime = glfwGetTime() - m_lastTime;

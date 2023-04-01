@@ -21,7 +21,7 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
 
-    TissusObject * GPUCloth = new TissusObject(Tissus(750, glm::vec3(0.f, 5.f, 0.f), 200, 200));
+    TissusObject * GPUCloth = new TissusObject(Tissus(750, glm::vec3(0.f, 5.f, 0.f), 10, 10));
     SolverExplicitGPUData * solverGPUData = new SolverExplicitGPUData(glm::vec3(0, -9.8, 0), glm::vec3(2, 0, 0), 0.995, 0.0005,
         GPUCloth->getVBO(),
         GPUCloth->getVelocity(),
@@ -89,7 +89,7 @@ void World::update(float time)
     auto current_time = glfwGetTime();
     auto delta_time = current_time - m_time;
     m_time = current_time;
-    std::cout<<"FPS : "<<1.f/delta_time<<std::endl;
+    //std::cout<<"FPS : "<<1.f/delta_time<<std::endl;
 
   
   for(const auto & o : m_objects)
