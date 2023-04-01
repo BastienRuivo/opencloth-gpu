@@ -2,15 +2,18 @@
 #include "Solver.h"
 #include <cuda.h>
 #include <cuda_gl_interop.h>
+#include "cuda_helper_math.h"
 
 class SolverExplicitGPUData : public SolverData
 {
 public:
     // CUDA BUFFERS
-    glm::vec3 *velocity, *acceleration, 
+    float3 *velocity, *acceleration, 
                 *force, *partialForce;
     Spring *springs;
     float *mass, * vertex;
+
+    float3 gravity_gpu, wind_gpu;
 
     Particle *particles;
 

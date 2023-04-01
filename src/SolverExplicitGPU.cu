@@ -1,19 +1,18 @@
 #include "SolverExplicitGPU.h"
 #include <cuda.h>
 #include <iostream>
-#define GLM_COMPILER 0
 // ====================================
 // kernel declaration
 // ====================================
 __global__ void solveGPU(float * vertex,
                 Particle *particle,
-                glm::vec3 *velocity,
-                glm::vec3 *acceleration,
-                glm::vec3 *force,
-                glm::vec3 *partialForce,
+                float3 *velocity,
+                float3 *acceleration,
+                float3 *force,
+                float3 *partialForce,
                 float *mass,
-                glm::vec3 gravity,
-                glm::vec3 wind,
+                float3 gravity,
+                float3 wind,
                 float viscosity,
                 float deltaT,
                 int size) {
@@ -24,7 +23,7 @@ __global__ void solveGPU(float * vertex,
             force[gtid] = force[gtid] + partialForce[particle[gtid].springs[i]] * particle[gtid].multiplier[i];
         }
         if(mass[gtid] == 0.0f){
-            acceleration[gtid] = glm::vec3(0.0f);
+            acceleration[gtid] = make_float3(0.f, 0.f, 0.f);
         }else{
             acceleration[gtid] = (force[gtid] / mass[gtid]) + gravity + wind;
         }
@@ -32,26 +31,26 @@ __global__ void solveGPU(float * vertex,
         vertex[gtid * 8] = vertex[gtid * 8] + deltaT * velocity[gtid].x;
         vertex[gtid * 8 + 1] = vertex[gtid * 8 + 1] + deltaT * velocity[gtid].y;
         vertex[gtid * 8 + 2] = vertex[gtid * 8 + 2] + deltaT * velocity[gtid].z;
-        force[gtid] = glm::vec3(0.0f);
+        force[gtid] = make_float3(0.f, 0.f, 0.f);
     }
 }
 
-__global__ void updateSpringsGPU(float * vertex, glm::vec3 * velocity, Spring * springs, glm::vec3 * partialForce, int size) {  
+__global__ void updateSpringsGPU(float * vertex, float3 * velocity, Spring * springs, float3 * partialForce, int size) {  
     int gtid = blockIdx.x*blockDim.x+threadIdx.x;
 
     if(gtid < size){
         int A = springs[gtid].PA;
         int B = springs[gtid].PB;
 
-        glm::vec3 dPos;
+        float3 dPos;
         dPos.x = vertex[A * 8] - vertex[B * 8];
         dPos.y = vertex[A * 8 + 1] - vertex[B * 8 + 1];
         dPos.z = vertex[A * 8 + 2] - vertex[B * 8 + 2];
-        glm::vec3 dVit = velocity[A] - velocity[B];
-        glm::vec3 dPosNorm = glm::normalize(dPos);
+        float3 dVit = velocity[A] - velocity[B];
+        float3 dPosNorm = normalize(dPos);
 
-        float diffLength = glm::length(dPos) - springs[gtid].restLength;
-        partialForce[gtid] = (springs[gtid].stiffness * diffLength * dPosNorm) + (springs[gtid].damping * dPos * glm::dot(dVit, dPos));
+        float diffLength = length(dPos) - springs[gtid].restLength;
+        partialForce[gtid] = (springs[gtid].stiffness * diffLength * dPosNorm) + (springs[gtid].damping * dPos * dot(dVit, dPos));
     }
 }
 
@@ -71,6 +70,8 @@ SolverExplicitGPUData::SolverExplicitGPUData(glm::vec3 gravity, glm::vec3 wind, 
     this->particleCount = particles->size();
     this->springCount = spring->size();
 
+    this->gravity_gpu = make_float3(gravity.x, gravity.y, gravity.z);
+    this->wind_gpu = make_float3(wind.x, wind.y, wind.z);
     this->VBO = VBO;
     cudaGraphicsGLRegisterBuffer(&this->cudaVboResource, this->VBO, cudaGraphicsMapFlagsNone);
     
@@ -126,7 +127,7 @@ void SolverExplicitGPU::solve(int tps) {
 
     solveGPU<<<gridSize, blockSize>>>(_data->vertex, _data->particles, _data->velocity, 
         _data->acceleration, _data->force, _data->partialForce, 
-        _data->mass, _data->gravity, _data->wind, 
+        _data->mass, _data->gravity_gpu, _data->wind_gpu, 
         _data->viscosity, _data->deltaT, _data->particleCount);
 }
 

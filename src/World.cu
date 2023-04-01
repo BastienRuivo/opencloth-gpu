@@ -21,8 +21,8 @@ World::World(Textures &tex, Shader &shad): m_textures(tex), m_shader(shad)
                 .setShaderKey("basic2D")
                 .setFaceCulling(true);
 
-    TissusObject * GPUCloth = new TissusObject(Tissus(1250, glm::vec3(0.f, 5.f, 0.f), 100, 100));
-    SolverExplicitGPUData * solverGPUData = new SolverExplicitGPUData(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.001,
+    TissusObject * GPUCloth = new TissusObject(Tissus(1250, glm::vec3(0.f, 5.f, 0.f), 250, 250));
+    SolverExplicitGPUData * solverGPUData = new SolverExplicitGPUData(glm::vec3(0, -9.8, 0), glm::vec3(0, 0, 0), 0.995, 0.0005,
         GPUCloth->getVBO(),
         GPUCloth->getVelocity(),
         GPUCloth->getAcceleration(),
