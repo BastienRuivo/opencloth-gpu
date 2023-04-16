@@ -19,12 +19,12 @@ Nous avons donc implémenté nos solvers sur un petit moteur graphique déjà é
 Pour installer la simulation, il suffit de cloner le projet, puis d'y créer un répertoire build et de lancer la commande `cmake ..` dans ce répertoire.
 
 Certaines librairies doivent au préalable être installées, notamment :
-glfw3 -> ` sudo apt-get install libglfw3 `
-opengl -> ` sudo apt-get install freeglut3 `
-stb -> ` sudo apt-get install libstb-dev `
-glew -> ` sudo apt-get install libglew-dev `
-glm -> ` sudo apt-get install libglm-dev `
-openmp -> ` sudo apt-get install libomp-dev `
+glfw3 -> ` sudo apt-get install libglfw3 `.
+opengl -> ` sudo apt-get install freeglut3 `.
+stb -> ` sudo apt-get install libstb-dev `.
+glew -> ` sudo apt-get install libglew-dev `.
+glm -> ` sudo apt-get install libglm-dev `.
+openmp -> ` sudo apt-get install libomp-dev `.
 et bien évidemment, pour les calculs sur GPU, cuda -> ` sudo apt install nvidia-cuda-toolkit `
 
 A savoir que notre projet ne fonctionne qu'avec des cartes graphiques NVidia, puisque Cuda est développé par NVidia, pour NVidia.
